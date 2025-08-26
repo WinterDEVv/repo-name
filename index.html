@@ -50,50 +50,38 @@
             box-sizing: border-box;
         }
 
-        /* Верхняя шапка (скрыта, так как убрана) */
+        /* Верхняя шапка — скрыта, так как убрана */
         .main-header {
+            display: none;
+        }
+
+        /* Панель внизу (фиксированная) */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
             width: 100%;
-            display: none; /* скрываем, так как убрали */
-        }
-
-        /* Анимация появления шапки (не используется) */
-        @keyframes slideDown {
-            from {
-                transform: translateY(-100%);
-            }
-
-            to {
-                transform: translateY(0);
-            }
-        }
-
-        /* Блок логотипа и навигации (убрана) */
-        .logo-section {
+            background: #3f4c5c;
             display: flex;
+            justify-content: space-around;
             align-items: center;
-            gap: 15px;
+            padding: 10px 0;
+            z-index: 999;
         }
 
-            /* Логотип */
-            .logo-section img {
-                height: 50px;
+        .bottom-nav button {
+                background: transparent;
+                border: none;
+                color: #fff;
+                font-size: 1.1em;
+                padding: 10px 20px;
                 cursor: pointer;
-                transition: transform 0.3s ease;
+                border-radius: 5px;
+                transition: background 0.3s;
             }
 
-                /* при hover */
-                .logo-section img:hover {
-                    transform: scale(1.1);
-                }
-
-            /* Заголовок */
-            .logo-section h1 {
-                font-family: 'Oswald', sans-serif;
-                font-size: 2em;
-                margin: 0;
-                color: #fff;
-                text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-                letter-spacing: 2px;
+        .bottom-nav button:hover {
+            background: rgba(255,255,255,0.2);
             }
 
         /* Контейнер для всех разделов */
@@ -102,7 +90,7 @@
             max-width: 1400px;
             text-align: center;
             padding-top: 100px;
-            padding-bottom: 50px;
+            padding-bottom: 60px; /* чтобы было место под нижнюю панель */
             animation: fadeIn 1s ease-out;
         }
 
@@ -133,14 +121,14 @@
             font-size: 3.5em;
             margin-bottom: 20px;
             letter-spacing: 2px;
-            text-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+            text-shadow: 0 0 15px rgba(255,255,255,0.2);
         }
 
         h2 {
             font-family: 'Oswald', sans-serif;
             font-size: 2.5em;
             margin-bottom: 20px;
-            text-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+            text-shadow: 0 0 15px rgba(255,255,255,0.2);
         }
 
         /* Авторизация */
@@ -159,25 +147,23 @@
             animation: fadeIn 0.8s;
         }
 
-            /* Вводы */
-            .auth-container input {
+        .auth-container input {
                 width: 100%;
                 padding: 15px;
                 border-radius: 10px;
-                border: 1px solid rgba(255, 255, 255, 0.2);
-                background: rgba(255, 255, 255, 0.05);
+                border: 1px solid rgba(255,255,255,0.2);
+                background: rgba(255,255,255,0.05);
                 color: var(--color-text);
                 font-size: 1.1em;
                 outline: none;
                 transition: background 0.3s, border-color 0.3s;
             }
 
-                .auth-container input:focus {
-                    background: rgba(255, 255, 255, 0.1);
+        .auth-container input:focus {
+                    background: rgba(255,255,255,0.1);
                     border-color: var(--color-button);
                 }
 
-        /* Кнопка авторизации */
         .auth-button {
             width: 100%;
             padding: 18px;
@@ -192,13 +178,13 @@
             box-shadow: 0 5px 15px var(--color-button-shadow);
         }
 
-            .auth-button:hover {
+        .auth-button:hover {
                 background-color: var(--color-button-hover);
                 transform: translateY(-2px);
                 box-shadow: 0 8px 20px var(--color-button-shadow);
             }
 
-        /* Панель с кейсами - скрыта, так как убрана */
+        /* Карточки кейсов и галерея — размеры уменьшены и в 2 ряда */
         .case-gallery {
             display: flex;
             flex-wrap: wrap;
@@ -206,7 +192,6 @@
             justify-content: center;
         }
 
-        /* Карточка кейса */
         .case-card {
             background: var(--color-card-bg);
             border: 1px solid var(--color-card-border);
@@ -215,16 +200,14 @@
             text-align: center;
             cursor: pointer;
             transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
-            max-width: 300px;
+            width: 45%; /* чтобы было 2 в ряду */
+            min-width: 150px;
             box-shadow: 0 8px 25px var(--color-card-shadow);
             position: relative;
             overflow: hidden;
-            /* добавим размеры для уменьшения */
-            width: 45%; /* чтобы в 2 ряда помещалось в ширину */
-            min-width: 150px;
         }
 
-            .case-card::before {
+        .case-card::before {
                 content: '';
                 position: absolute;
                 top: 0;
@@ -236,31 +219,31 @@
                 opacity: 0.2;
             }
 
-            .case-card:hover {
+        .case-card:hover {
                 transform: translateY(-10px) scale(1.03);
-                box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+                box-shadow: 0 15px 40px rgba(0,0,0,0.6);
                 border-color: var(--color-button);
             }
 
-            .case-card img {
+        .case-card img {
                 max-width: 80%;
                 height: auto;
                 display: block;
                 margin: 0 auto;
             }
 
-            .case-card:hover img {
-                transform: scale(1.05);
+       .case-card:hover img {
+              transform: scale(1.05);
             }
 
-            .case-card h3 {
+       .case-card h3 {
                 font-family: 'Oswald', sans-serif;
                 font-size: 1.8em;
                 margin: 10px 0;
                 color: #fff;
             }
 
-            .case-card p {
+       .case-card p {
                 font-size: 1.3em;
                 font-weight: bold;
                 color: var(--color-button);
@@ -268,31 +251,31 @@
             }
 
         /* Секция рулетки */
-        .roulette-section {
+       .roulette-section {
             display: none;
             width: 100%;
         }
 
-        .roulette-container {
+       .roulette-container {
             position: relative;
             width: 100%;
             height: 250px;
             overflow: hidden;
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0,0,0,0.3);
             border-radius: 20px;
-            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.7), 0 10px 30px rgba(0, 0, 0, 0.4);
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.7), 0 10px 30px rgba(0,0,0,0.4);
             margin-bottom: 40px;
             border: 2px solid var(--color-card-border);
         }
 
-        .roulette-items {
+       .roulette-items {
             display: flex;
             height: 100%;
             align-items: center;
             transition: transform 6s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
-        .item-card {
+       .item-card {
             min-width: 200px;
             height: 200px;
             margin: 0 10px;
@@ -309,8 +292,8 @@
             box-shadow: 0 5px 15px var(--color-card-shadow);
             flex-shrink: 0;
         }
-            /* Размеры для рулетки - можно оставить как есть или уменьшить */
-            .item-card::after {
+            /* Размеры рулетки - можно оставить как есть или уменьшить */
+       .item-card::after {
                 content: '';
                 position: absolute;
                 top: 0;
@@ -322,58 +305,58 @@
                 transition: opacity 0.3s ease-in-out;
             }
 
-            .item-card:hover {
+       .item-card:hover {
                 transform: scale(1.05);
-                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
+                box-shadow: 0 8px 25px rgba(0,0,0,0.6);
             }
 
-                .item-card:hover::after {
+       .item-card:hover::after {
                     opacity: 1;
                 }
 
-            .item-card.super-legendary {
+       .item-card.super-legendary {
                 background: var(--color-super-legendary);
             }
 
-            .item-card.legendary {
+       .item-card.legendary {
                 background: var(--color-legendary);
             }
 
-            .item-card.epic {
+       .item-card.epic {
                 background: var(--color-epic);
             }
 
-            .item-card.rare {
+       .item-card.rare {
                 background: var(--color-rare);
             }
 
-            .item-card.unusual {
+       .item-card.unusual {
                 background: var(--color-unusual);
             }
 
-            .item-card.common {
+       .item-card.common {
                 background: var(--color-common);
             }
 
-        .item-gif {
+       .item-gif {
             width: 80px;
             height: 80px;
             object-fit: contain;
             filter: drop-shadow(0 0 8px rgba(0,0,0,0.4));
         }
 
-        .item-name {
+       .item-name {
             font-size: 1em;
             font-weight: bold;
             margin-top: 5px;
         }
 
-        .item-price {
+       .item-price {
             font-size: 0.9em;
             margin-top: 2px;
         }
 
-        .item-chance {
+       .item-chance {
             font-size: 0.9em;
             font-weight: 500;
             color: #fff;
@@ -383,8 +366,8 @@
             margin-top: 5px;
         }
 
-        /* Полоса внизу с кнопками - стиль */
-        .bottom-nav {
+        /* Полоса внизу с кнопками: фиксированная панель */
+       .bottom-nav {
             position: fixed;
             bottom: 0;
             left: 0;
@@ -397,7 +380,7 @@
             z-index: 999;
         }
 
-            .bottom-nav button {
+       .bottom-nav button {
                 background: transparent;
                 border: none;
                 color: #fff;
@@ -408,12 +391,12 @@
                 transition: background 0.3s;
             }
 
-                .bottom-nav button:hover {
+       .bottom-nav button:hover {
                     background: rgba(255,255,255,0.2);
                 }
 
-        /* Остальные стили для модальных окон, профиля и т.п. — оставить без изменений */
-        .modal {
+        /* Модальные и остальные стили без изменений */
+       .modal {
             display: none;
             position: fixed;
             z-index: 20;
@@ -428,7 +411,7 @@
             animation: modalFadeIn 0.5s;
         }
 
-        .modal-content {
+       .modal-content {
             padding: 40px;
             border-radius: 20px;
             text-align: center;
@@ -438,7 +421,7 @@
             border: 3px solid #fff;
         }
 
-        .modal-close {
+       .modal-close {
             position: absolute;
             top: 15px;
             right: 20px;
@@ -449,12 +432,12 @@
             transition: transform 0.2s ease, color 0.2s;
         }
 
-            .modal-close:hover {
+       .modal-close:hover {
                 transform: scale(1.2) rotate(90deg);
                 color: #fff;
             }
         /* Остальные стили — оставить без изменений */
-        .item-list-container {
+       .item-list-container {
             width: 100%;
             max-width: 1000px;
             margin-top: 50px;
@@ -467,7 +450,7 @@
             animation: fadeIn 1s ease-out;
         }
 
-            .item-list-container h2 {
+       .item-list-container h2 {
                 text-align: center;
                 font-family: 'Oswald', sans-serif;
                 font-size: 2.5em;
@@ -476,7 +459,7 @@
                 border-bottom: 2px solid rgba(255,255,255,0.1);
             }
 
-        .chances-list {
+       .chances-list {
             list-style: none;
             padding: 0;
             margin: 0 auto 20px;
@@ -486,20 +469,16 @@
             gap: 20px;
         }
 
-            .chances-list li {
+       .chances-list li {
                 font-size: 1.2em;
                 font-weight: bold;
                 text-shadow: 0 0 5px rgba(0,0,0,0.4);
                 transition: transform 0.2s ease;
             }
 
-                .chances-list li:hover {
+       .chances-list li:hover {
                     transform: scale(1.05);
                 }
-
-        .rarity-classes {
-            /* цвета для разных редкостей */
-        }
     </style>
 </head>
 <body>
