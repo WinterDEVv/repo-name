@@ -15,7 +15,7 @@
             --color-rare: #2196f3;
             --color-unusual: #3498db;
             --color-common: #a4a4a4;
-            --color-background: #121212;
+            --color-background: #20272f;
             --color-text: #e0e0e0;
             --color-button: #4caf50;
             --color-button-hover: #43a047;
@@ -254,11 +254,11 @@
 
         .case-gallery {
             display: flex;
-            justify-content: center;
             flex-wrap: wrap;
-            gap: 40px;
-            padding: 30px 0;
+            gap: 10px; /* расстояние между кейсами */
+            justify-content: center;
         }
+
 
         .case-card {
             background: var(--color-card-bg);
@@ -293,12 +293,11 @@
         }
 
         .case-card img {
-            width: 80%;
+            max-width: 80%;
             height: auto;
-            border-radius: 15px;
-            margin-bottom: 15px;
-            transition: transform 0.3s ease;
-        }
+            display: block;
+            margin: 0 auto;
+            }
 
         .case-card:hover img {
             transform: scale(1.05);
@@ -781,11 +780,13 @@
             }
 
             .case-gallery {
-                gap: 20px;
+                gap: 10px;
             }
 
             .case-card {
-                max-width: 250px;
+                max-width: 45%; /* два в ряд */
+                width: 100%;
+                box-sizing: border-box; /* чтобы padding и border не выходили за границы */
             }
 
             .roulette-container {
@@ -840,10 +841,12 @@
             }
 
             .case-gallery {
-                flex-direction: column;
-                align-items: center;
-                gap: 15px;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px; /* расстояние между кейсами */
+                justify-content: center;
             }
+
 
             .roulette-container {
                 height: 150px;
@@ -1231,7 +1234,7 @@
 
 <script>
     const ADMIN_ID = 8028638705;
-    const BOT_API_URL = 'https://winterdevv.github.io/repo-name/'; // замените на ссылку вашего сервера с ботом!
+    const BOT_API_URL = 'https://winterdevv.github.io/repo-name/api'; // замените на ссылку вашего сервера с ботом!
 
     const cases = [
         {
@@ -1254,7 +1257,7 @@
         {
             id: 'bmw-case',
             name: 'Case BMW',
-            image: 'bmv_case.png',
+            image: 'bmvcase.png',
             price: 220,
             items: [
                 { name: 'Durov Cap', file: 'GiftStickersByAutoGiftNews_77.gif', price: 100000, rarity_ru: 'Супер-Легендарный', rarity_color: 'super-legendary', chance: 0.2 },
