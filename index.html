@@ -252,28 +252,19 @@
             box-shadow: 0 8px 20px var(--color-button-shadow);
         }
 
-        .case-gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 10px;
-            margin-top: 5px;
+        case-gallery {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px; /* расстояние между карточками */
         }
 
 
         .case-card {
-            background-color: #2b353f; /* фиксированный фон */
-            border: 1px solid var(--color-card-border);
-            border-radius: 20px;
-            padding: 25px;
-            text-align: center;
-            cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
-            max-width: 45%; /* чтобы было по 2 на экран */
-            width: 100%;
-            box-shadow: 0 8px 25px var(--color-card-shadow);
-            position: relative;
-            overflow: hidden;
-            margin: 10px; /* небольшой отступ между карточками */
+            flex: 1 1 calc(50% - 20px); /* ширина примерно 50%, с учетом отступов */
+            max-width: calc(50% - 20px);
+            box-sizing: border-box;
+            margin: 10px 0; /* вертикальные отступы, горизонтальные управляются flex */
         }
 
         .case-card::before {
