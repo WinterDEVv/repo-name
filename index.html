@@ -255,7 +255,6 @@
         .case-gallery {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px; /* расстояние между кейсами */
             justify-content: center;
         }
 
@@ -472,7 +471,7 @@
             border-radius: 5px;
             cursor: pointer;
             transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
-            box-shadow: 0 10px 20px var(--color-button-shadow);
+            box-shadow: 0 10px 20px rgba(255, 255, 255, 0.2);
             text-transform: uppercase;
             letter-spacing: 1px;
         }
@@ -480,7 +479,7 @@
         .open-button:hover {
             background-color: #0098eb;
             transform: translateY(-5px) scale(1.02);
-            box-shadow: 0 15px 30px var(--color-button-shadow);
+            box-shadow: 0 15px 30px rgba(255, 255, 255, 0.2);
         }
 
         .open-button:disabled {
@@ -807,7 +806,7 @@
 
             .open-button {
                 padding: 15px 90px;
-                font-size: 1em;
+                font-size: 0.4em;
             }
 
             .item-list-container {
@@ -866,7 +865,7 @@
 
             .open-button {
                 padding: 10px 20px;
-                font-size: 1em;
+                font-size: 0.4em;
             }
 
             .modal-content {
@@ -1477,7 +1476,7 @@
         populateRoulette(currentCase.items);
         populateItemList(currentCase.items);
         populateChancesList(currentCase.items);
-        itemListTitle.textContent = `В кейсе "${currentCase.name}":`;
+        itemListTitle.textContent = `содержимое кейса`;
     }
 
     function getRandomItemByChance(items) {
