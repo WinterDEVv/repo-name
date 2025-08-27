@@ -253,9 +253,10 @@
         }
 
         .case-gallery {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
         }
 
 
@@ -462,18 +463,18 @@
         }
 
         .open-button {
-            padding: 20px 50px;
-            font-size: 1em;
+            margin: 30px auto;
+            display: block;
+            padding: 15px 40px;
+            font-size: 1.2em;
             font-weight: bold;
-            color: #fff;
             background-color: #0098eb;
+            color: #fff;
             border: none;
-            border-radius: 5px;
+            border-radius: 10px;
             cursor: pointer;
-            transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
-            box-shadow: 0 10px 20px rgba(255, 255, 255, 0.2);
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            transition: all 0.3s;
         }
 
         .open-button:hover {
@@ -1079,783 +1080,848 @@
                 border: 2px solid transparent;
             }
         }
+        gift-feed {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            overflow: hidden;
+            height: 70px;
+            z-index: 999;
+            font-family: 'Oswald', sans-serif;
+        }
+
+        gift-feed h3 {
+            color: #fff;
+            margin: 0;
+            margin-right: 15px;
+            font-size: 1.2em;
+            }
+        gif-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            overflow: hidden;
+            flex: 1;
+            height: 70px;
+        }
         
     </style>
 </head>
 <body>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-<header class="main-header">
-    <div class="logo-section">
-        <a href="#" id="logo-link">
-            <img src="LogoPanel.png" alt="GiftRunner Logo">
-        </a>
-        <h1 id="project-title">GiftRunner</h1>
+    <div id="gift-feed">
+        <h3>Выбили подарки:</h3>
+        <div id="gif-container"></div>
     </div>
-    <nav class="nav-menu">
-        <a href="#" data-section="cases">Кейсы</a>
-        <a href="#" data-section="inventory">Инвентарь</a>
-        <a href="#" data-section="upgrade">Апгрейд</a>
-        <a href="#" data-section="profile">Профиль</a>
-        <a href="#" data-section="admin" id="admin-link" style="display: none;">Админка</a>
-    </nav>
-    <div class="balance-info" id="balance-info">
-        Баланс: <span id="balance-value">0</span> ⭐
-    </div>
-</header>
 
-<div class="container">
-    <div class="welcome-message" id="welcome-message">
-        <h1>Добро пожаловать в GiftRunner!</h1>
-        <p>Пожалуйста, запустите это приложение из Telegram-бота, чтобы авторизоваться и получить доступ.</p>
-    </div>
-    
-    <div class="content-section" id="event-section" style="display: none;">
-        <div class="event-container" id="event-container">
-            <h3 id="event-name"></h3>
-            <p id="event-description"></p>
-            <p id="event-time"></p>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <header class="main-header">
+        <div class="logo-section">
+            <a href="#" id="logo-link">
+                <img src="LogoPanel.png" alt="GiftRunner Logo">
+            </a>
+            <h1 id="project-title">GiftRunner</h1>
         </div>
-    </div>
-    
-    <div class="content-section" id="cases-section">
-        <h1 id="cases-title">Выберите кейс</h1>
-        <div class="case-gallery" id="case-gallery"></div>
-    </div>
+        <nav class="nav-menu">
+            <a href="#" data-section="cases">Кейсы</a>
+            <a href="#" data-section="inventory">Инвентарь</a>
+            <a href="#" data-section="upgrade">Апгрейд</a>
+            <a href="#" data-section="profile">Профиль</a>
+            <a href="#" data-section="admin" id="admin-link" style="display: none;">Админка</a>
+        </nav>
+        <div class="balance-info" id="balance-info">
+            Баланс: <span id="balance-value">0</span> ⭐
+        </div>
+    </header>
 
-    <div class="content-section" id="roulette-section">
-        <button class="back-button" id="back-button">← К кейсам</button>
-        <div class="roulette-header">
-            <h1 id="roulette-case-title"></h1>
+    <div class="container">
+        <div class="welcome-message" id="welcome-message">
+            <h1>Добро пожаловать в GiftRunner!</h1>
+            <p>Пожалуйста, запустите это приложение из Telegram-бота, чтобы авторизоваться и получить доступ.</p>
         </div>
 
-        <div class="roulette-container">
-            <div class="indicator"></div>
-            <div class="roulette-items"></div>
-        </div>
-
-        <button class="open-button" id="open-btn">Испытать удачу - <span id="open-btn-price"></span>⭐</button>
-    </div>
-
-    <div class="content-section" id="inventory-section">
-        <h2>Инвентарь</h2>
-        <p id="inventory-empty-message" style="text-align: center; display: none;">Инвентарь пуст. Откройте кейс, чтобы получить предметы!</p>
-        <div class="inventory-grid" id="inventory-grid"></div>
-    </div>
-
-    <div class="content-section" id="profile-section">
-        <h2 id="profile-title">Профиль</h2>
-        <div class="profile-content">
-            <div class="profile-header">
-                <img id="profile-photo" class="profile-picture" src="default_avatar.png" alt="Профиль">
-                <div class="profile-info">
-                    <p>ID: <span id="profile-id"></span></p>
-                    <p>Имя: <span id="profile-name"></span></p>
-                    <p>Баланс: <span id="profile-balance"></span> ⭐</p>
-                </div>
-            </div>
-            <div class="profile-stats-grid">
-                <div class="stat-card">
-                    <h4>Открыто кейсов</h4>
-                    <p id="stat-cases-opened">0</p>
-                </div>
-                <div class="stat-card">
-                    <h4>Лучший дроп</h4>
-                    <p id="stat-best-drop">Нет</p>
-                </div>
-                <div class="stat-card">
-                    <h4>Любимый кейс</h4>
-                    <p id="stat-favorite-case">Нет</p>
-                </div>
+        <div class="content-section" id="event-section" style="display: none;">
+            <div class="event-container" id="event-container">
+                <h3 id="event-name"></h3>
+                <p id="event-description"></p>
+                <p id="event-time"></p>
             </div>
         </div>
-    </div>
 
-    <div class="content-section" id="admin-section">
-        <h2>Админка</h2>
-        <div class="admin-actions">
-            <form id="balance-form">
-                <h3>Управление балансом</h3>
-                <label for="balance-id">ID пользователя:</label>
-                <input type="number" id="balance-id" name="id" placeholder="Введите ID" required>
-                <label for="balance-amount">Количество ⭐:</label>
-                <input type="number" id="balance-amount" name="amount" placeholder="Введите количество" required>
-                <button type="submit">Выдать баланс</button>
-            </form>
+        <div class="content-section" id="cases-section">
+            <h1 id="cases-title">Выберите кейс</h1>
+            <div class="case-gallery" id="case-gallery"></div>
+        </div>
 
-            <form id="flags-form">
-                <h3>Управление флагами шансов</h3>
-                <label for="flag-select">Выберите флаг:</label>
-                <select id="flag-select" name="flag">
-                    <option value="100_per_rarity_super">100% на Супер-Легендарный</option>
-                    <option value="100_per_rarity">100% на Легендарный</option>
-                    <option value="double_chances">Удвоенные шансы</option>
-                    <option value="trible_chances">Утроенные шансы</option>
-                </select>
-                <label for="flag-value">Состояние:</label>
-                <select id="flag-value" name="value">
-                    <option value="true">Включить</option>
-                    <option value="false">Выключить</option>
-                </select>
-                <button type="submit">Установить флаг</button>
-            </form>
+        <div class="content-section" id="roulette-section">
+            <button class="back-button" id="back-button">← К кейсам</button>
+            <div class="roulette-header">
+                <h1 id="roulette-case-title"></h1>
+            </div>
 
-            <form id="event-form">
-                <h3>Создать событие</h3>
-                <label for="event-name-input">Имя события:</label>
-                <input type="text" id="event-name-input" name="name" required>
-                <label for="event-time-input">Время события (ч.):</label>
-                <input type="number" id="event-time-input" name="time" required>
-                <label for="event-description-input">Описание:</label>
-                <textarea id="event-description-input" name="description" rows="3" required></textarea>
-                <label for="event-color-select">Цвет события:</label>
-                <select id="event-color-select" name="color">
-                    <option value="red">Красный</option>
-                    <option value="gold">Золотой</option>
-                    <option value="white">Белый</option>
-                    <option value="green">Зеленый</option>
-                    <option value="blue">Синий</option>
-                </select>
-                <button type="submit">Создать событие</button>
-            </form>
+            <div class="roulette-container">
+                <div class="indicator"></div>
+                <div class="roulette-items"></div>
+            </div>
+
+            <button class="open-button" id="open-btn">Испытать удачу - <span id="open-btn-price"></span>⭐</button>
+        </div>
+
+        <div class="content-section" id="inventory-section">
+            <h2>Инвентарь</h2>
+            <p id="inventory-empty-message" style="text-align: center; display: none;">Инвентарь пуст. Откройте кейс, чтобы получить предметы!</p>
+            <div class="inventory-grid" id="inventory-grid"></div>
+        </div>
+
+        <div class="content-section" id="profile-section">
+            <h2 id="profile-title">Профиль</h2>
+            <div class="profile-content">
+                <div class="profile-header">
+                    <img id="profile-photo" class="profile-picture" src="default_avatar.png" alt="Профиль">
+                    <div class="profile-info">
+                        <p>ID: <span id="profile-id"></span></p>
+                        <p>Имя: <span id="profile-name"></span></p>
+                        <p>Баланс: <span id="profile-balance"></span> ⭐</p>
+                    </div>
+                </div>
+                <div class="profile-stats-grid">
+                    <div class="stat-card">
+                        <h4>Открыто кейсов</h4>
+                        <p id="stat-cases-opened">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Лучший дроп</h4>
+                        <p id="stat-best-drop">Нет</p>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Любимый кейс</h4>
+                        <p id="stat-favorite-case">Нет</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-section" id="admin-section">
+            <h2>Админка</h2>
+            <div class="admin-actions">
+                <form id="balance-form">
+                    <h3>Управление балансом</h3>
+                    <label for="balance-id">ID пользователя:</label>
+                    <input type="number" id="balance-id" name="id" placeholder="Введите ID" required>
+                    <label for="balance-amount">Количество ⭐:</label>
+                    <input type="number" id="balance-amount" name="amount" placeholder="Введите количество" required>
+                    <button type="submit">Выдать баланс</button>
+                </form>
+
+                <form id="flags-form">
+                    <h3>Управление флагами шансов</h3>
+                    <label for="flag-select">Выберите флаг:</label>
+                    <select id="flag-select" name="flag">
+                        <option value="100_per_rarity_super">100% на Супер-Легендарный</option>
+                        <option value="100_per_rarity">100% на Легендарный</option>
+                        <option value="double_chances">Удвоенные шансы</option>
+                        <option value="trible_chances">Утроенные шансы</option>
+                    </select>
+                    <label for="flag-value">Состояние:</label>
+                    <select id="flag-value" name="value">
+                        <option value="true">Включить</option>
+                        <option value="false">Выключить</option>
+                    </select>
+                    <button type="submit">Установить флаг</button>
+                </form>
+
+                <form id="event-form">
+                    <h3>Создать событие</h3>
+                    <label for="event-name-input">Имя события:</label>
+                    <input type="text" id="event-name-input" name="name" required>
+                    <label for="event-time-input">Время события (ч.):</label>
+                    <input type="number" id="event-time-input" name="time" required>
+                    <label for="event-description-input">Описание:</label>
+                    <textarea id="event-description-input" name="description" rows="3" required></textarea>
+                    <label for="event-color-select">Цвет события:</label>
+                    <select id="event-color-select" name="color">
+                        <option value="red">Красный</option>
+                        <option value="gold">Золотой</option>
+                        <option value="white">Белый</option>
+                        <option value="green">Зеленый</option>
+                        <option value="blue">Синий</option>
+                    </select>
+                    <button type="submit">Создать событие</button>
+                </form>
+            </div>
         </div>
     </div>
-</div>
 
-<div id="result-modal" class="modal">
-    <div class="modal-content" id="modal-item-info">
-        <span class="modal-close">&times;</span>
+    <div id="result-modal" class="modal">
+        <div class="modal-content" id="modal-item-info">
+            <span class="modal-close">&times;</span>
+        </div>
     </div>
-</div>
 
-<div class="item-list-container" id="item-list-container">
-    <h2 id="item-list-title"></h2>
-    <ul class="chances-list" id="chances-list"></ul>
-    <div class="item-list-grid" id="item-list"></div>
-</div>
+    <div class="item-list-container" id="item-list-container">
+        <h2 id="item-list-title"></h2>
+        <ul class="chances-list" id="chances-list"></ul>
+        <div class="item-list-grid" id="item-list"></div>
+    </div>
 
-<script>
-    const ADMIN_ID = 8028638705;
-    const BOT_API_URL = 'https://winterdevv.github.io/repo-name/api'; // замените на ссылку вашего сервера с ботом!
+    <script>
+        const ADMIN_ID = 8028638705;
+        const BOT_API_URL = 'https://winterdevv.github.io/repo-name/api'; // замените на ссылку вашего сервера с ботом!
 
-    const cases = [
-        {
-            id: 'we-opened',
-            name: 'We Openned!',
-            image: 'we_open.png',
-            price: 2500,
-            items: [
-                { name: 'Plush Pepe', file: 'GiftStickersByAutoGiftNews_1.gif', price: 900000, rarity_ru: 'Супер-Легендарный', rarity_color: 'super-legendary', chance: 0.2 },
-                { name: 'Heart Lockets', file: 'GiftStickersByAutoGiftNews_2.gif', price: 200000, rarity_ru: 'Легендарный', rarity_color: 'legendary', chance: 0.5 },
-                { name: 'Nail Bracelets', file: 'GiftStickersByAutoGiftNews_3.gif', price: 50000, rarity_ru: 'Легендарный', rarity_color: 'legendary', chance: 0.5 },
-                { name: 'Signet Ring', file: 'GiftStickersByAutoGiftNews_70.gif', price: 4627, rarity_ru: 'Эпический', rarity_color: 'epic', chance: 2.0 },
-                { name: 'Hanging Star', file: 'GiftStickersByAutoGiftNews_76.gif', price: 700, rarity_ru: 'Редкий', rarity_color: 'rare', chance: 15.0 },
-                { name: 'B-Day Candle', file: 'GiftStickersByAutoGiftNews_21.gif', price: 150, rarity_ru: 'Необычный', rarity_color: 'unusual', chance: 20.0 },
-                { name: 'Lol Pop', file: 'GiftStickersByAutoGiftNews_102.gif', price: 200, rarity_ru: 'Необычный', rarity_color: 'unusual', chance: 20.0 },
-                { name: 'B-Day Calendar', file: 'GiftStickersByAutoGiftNews_104.gif', price: 200, rarity_ru: 'Необычный', rarity_color: 'unusual', chance: 20.0 },
-                { name: 'NY Snake', file: 'GiftStickersByAutoGiftNews_51.gif', price: 200, rarity_ru: 'Необычный', rarity_color: 'unusual', chance: 21.8 }
-            ]
-        },
-        {
-            id: 'bmw-case',
-            name: 'Case BMW',
-            image: 'bmvcase.png',
-            price: 220,
-            items: [
-                { name: 'Toy Bear', file: 'ToyBear.gif', price: 17998, rarity_ru: 'Супер-Легендарный', rarity_color: 'super-legendary', chance: 0.2 },
-                { name: 'Nail Bracelets', file: 'GiftStickersByAutoGiftNews_3.gif', price: 33000, rarity_ru: 'Легендарный', rarity_color: 'legendary', chance: 0.5 },
-                { name: 'Heroic Helmets', file: 'GiftStickersByAutoGiftNews_6.gif', price: 20000, rarity_ru: 'Легендарный', rarity_color: 'legendary', chance: 0.5 },
-                { name: 'Ion Gems', file: 'GiftStickersByAutoGiftNews_7.gif', price: 10000, rarity_ru: 'Легендарный', rarity_color: 'legendary', chance: 0.5 },
-                { name: 'Neko Helmets', file: 'GiftStickersByAutoGiftNews_8.gif', price: 3555, rarity_ru: 'Эпический', rarity_color: 'epic', chance: 3.0 },
-                { name: 'Vintage Cigars', file: 'GiftStickersByAutoGiftNews_84.gif', price: 2805, rarity_ru: 'Эпический', rarity_color: 'epic', chance: 3.0 },
-                { name: 'Unusual items', file: 'GiftStickersByAutoGiftNews_21.gif', price: '150-200', rarity_ru: 'Необычный', rarity_color: 'unusual', chance: 15.0 },
-                { name: 'Common items', file: 'GiftStickersByAutoGiftNews_10.gif', price: '15-100', rarity_ru: 'Обычный', rarity_color: 'common', chance: 77.3 }
-            ]
-        },
-        {
-            id: 'heroic-helmet-farm',
-            name: 'Heroic Helmet Farm',
-            image: 'heroicfarm.png',
-            price: 600,
-            items: [
-                { name: 'Heroic Helmets', file: 'GiftStickersByAutoGiftNews_6.gif', price: 20000, rarity_ru: 'Легендарный', rarity_color: 'legendary', chance: 1.5 },
-                { name: 'Vintage Cigars', file: 'GiftStickersByAutoGiftNews_84.gif', price: 2805, rarity_ru: 'Эпический', rarity_color: 'epic', chance: 7.0 },
-                { name: 'Scared Cats', file: 'GiftStickersByAutoGiftNews_8.gif', price: 3525, rarity_ru: 'Эпический', rarity_color: 'epic', chance: 7.0 },
-                { name: 'Swiss Watch', file: 'GiftStickersByAutoGiftNews_69.gif', price: 3000, rarity_ru: 'Эпический', rarity_color: 'epic', chance: 7.0 },
-                { name: 'Signet Ring', file: 'GiftStickersByAutoGiftNews_70.gif', price: 2627, rarity_ru: 'Эпический', rarity_color: 'epic', chance: 7.0 },
-                { name: 'Hanging Star', file: 'GiftStickersByAutoGiftNews_76.gif', price: 700, rarity_ru: 'Редкий', rarity_color: 'rare', chance: 35.0 },
-                { name: 'Unusual items', file: 'GiftStickersByAutoGiftNews_21.gif', price: '150-200', rarity_ru: 'Необычный', rarity_color: 'unusual', chance: 25.0 },
-                { name: 'Common items', file: 'GiftStickersByAutoGiftNews_10.gif', price: '15-100', rarity_ru: 'Обычный', rarity_color: 'common', chance: 15.5 }
-            ]
+        const cases = [
+            {
+                id: 'we-opened',
+                name: 'We Openned!',
+                image: 'we_open.png',
+                price: 2500,
+                items: [
+                    { name: 'Plush Pepe', file: 'GiftStickersByAutoGiftNews_1.gif', price: 900000, rarity_ru: 'Супер-Легендарный', rarity_color: 'super-legendary', chance: 0.2 },
+                    { name: 'Heart Lockets', file: 'GiftStickersByAutoGiftNews_2.gif', price: 200000, rarity_ru: 'Легендарный', rarity_color: 'legendary', chance: 0.5 },
+                    { name: 'Nail Bracelets', file: 'GiftStickersByAutoGiftNews_3.gif', price: 50000, rarity_ru: 'Легендарный', rarity_color: 'legendary', chance: 0.5 },
+                    { name: 'Signet Ring', file: 'GiftStickersByAutoGiftNews_70.gif', price: 4627, rarity_ru: 'Эпический', rarity_color: 'epic', chance: 2.0 },
+                    { name: 'Hanging Star', file: 'GiftStickersByAutoGiftNews_76.gif', price: 700, rarity_ru: 'Редкий', rarity_color: 'rare', chance: 15.0 },
+                    { name: 'B-Day Candle', file: 'GiftStickersByAutoGiftNews_21.gif', price: 150, rarity_ru: 'Необычный', rarity_color: 'unusual', chance: 20.0 },
+                    { name: 'Lol Pop', file: 'GiftStickersByAutoGiftNews_102.gif', price: 200, rarity_ru: 'Необычный', rarity_color: 'unusual', chance: 20.0 },
+                    { name: 'B-Day Calendar', file: 'GiftStickersByAutoGiftNews_104.gif', price: 200, rarity_ru: 'Необычный', rarity_color: 'unusual', chance: 20.0 },
+                    { name: 'NY Snake', file: 'GiftStickersByAutoGiftNews_51.gif', price: 200, rarity_ru: 'Необычный', rarity_color: 'unusual', chance: 21.8 }
+                ]
+            },
+            {
+                id: 'bmw-case',
+                name: 'Case BMW',
+                image: 'bmvcase.png',
+                price: 220,
+                items: [
+                    { name: 'Toy Bear', file: 'ToyBear.gif', price: 17998, rarity_ru: 'Супер-Легендарный', rarity_color: 'super-legendary', chance: 0.2 },
+                    { name: 'Nail Bracelets', file: 'GiftStickersByAutoGiftNews_3.gif', price: 33000, rarity_ru: 'Легендарный', rarity_color: 'legendary', chance: 0.5 },
+                    { name: 'Heroic Helmets', file: 'GiftStickersByAutoGiftNews_6.gif', price: 20000, rarity_ru: 'Легендарный', rarity_color: 'legendary', chance: 0.5 },
+                    { name: 'Ion Gems', file: 'GiftStickersByAutoGiftNews_7.gif', price: 10000, rarity_ru: 'Легендарный', rarity_color: 'legendary', chance: 0.5 },
+                    { name: 'Neko Helmets', file: 'GiftStickersByAutoGiftNews_8.gif', price: 3555, rarity_ru: 'Эпический', rarity_color: 'epic', chance: 3.0 },
+                    { name: 'Vintage Cigars', file: 'GiftStickersByAutoGiftNews_84.gif', price: 2805, rarity_ru: 'Эпический', rarity_color: 'epic', chance: 3.0 },
+                    { name: 'Unusual items', file: 'GiftStickersByAutoGiftNews_21.gif', price: '150-200', rarity_ru: 'Необычный', rarity_color: 'unusual', chance: 15.0 },
+                    { name: 'Common items', file: 'GiftStickersByAutoGiftNews_10.gif', price: '15-100', rarity_ru: 'Обычный', rarity_color: 'common', chance: 77.3 }
+                ]
+            },
+            {
+                id: 'heroic-helmet-farm',
+                name: 'Heroic Helmet Farm',
+                image: 'heroicfarm.png',
+                price: 600,
+                items: [
+                    { name: 'Heroic Helmets', file: 'GiftStickersByAutoGiftNews_6.gif', price: 20000, rarity_ru: 'Легендарный', rarity_color: 'legendary', chance: 1.5 },
+                    { name: 'Vintage Cigars', file: 'GiftStickersByAutoGiftNews_84.gif', price: 2805, rarity_ru: 'Эпический', rarity_color: 'epic', chance: 7.0 },
+                    { name: 'Scared Cats', file: 'GiftStickersByAutoGiftNews_8.gif', price: 3525, rarity_ru: 'Эпический', rarity_color: 'epic', chance: 7.0 },
+                    { name: 'Swiss Watch', file: 'GiftStickersByAutoGiftNews_69.gif', price: 3000, rarity_ru: 'Эпический', rarity_color: 'epic', chance: 7.0 },
+                    { name: 'Signet Ring', file: 'GiftStickersByAutoGiftNews_70.gif', price: 2627, rarity_ru: 'Эпический', rarity_color: 'epic', chance: 7.0 },
+                    { name: 'Hanging Star', file: 'GiftStickersByAutoGiftNews_76.gif', price: 700, rarity_ru: 'Редкий', rarity_color: 'rare', chance: 35.0 },
+                    { name: 'Unusual items', file: 'GiftStickersByAutoGiftNews_21.gif', price: '150-200', rarity_ru: 'Необычный', rarity_color: 'unusual', chance: 25.0 },
+                    { name: 'Common items', file: 'GiftStickersByAutoGiftNews_10.gif', price: '15-100', rarity_ru: 'Обычный', rarity_color: 'common', chance: 15.5 }
+                ]
+            }
+        ];
+
+
+        const giftGifs = [
+            'GiftStickersByAutoGiftNews_102.gif',
+            'GiftStickersByAutoGiftNews_84.gif',
+            'GiftStickersByAutoGiftNews_8.',
+            'GiftStickersByAutoGiftNews_70.gif',
+            'GiftStickersByAutoGiftNews_21.gif',
+            'GiftStickersByAutoGiftNews_10.gif'
+        ];
+
+        const gifContainer = document.getElementById('gif-container');
+
+        // функция добавления случайного GIF
+        function addRandomGif() {
+            const gif = document.createElement('img');
+            gif.src = giftGifs[Math.floor(Math.random() * giftGifs.length)];
+            gif.className = 'gif-item';
+            gifContainer.appendChild(gif);
+            // Удаляем старые, чтобы не было переполнения
+            if (gifContainer.children.length > 10) {
+                gifContainer.removeChild(gifContainer.firstChild);
+            }
         }
-    ];
 
-    let currentCase = null;
-    let telegramUser = null;
-    let userBalance = 100000;
-    let userInventory = [];
-    let userStats = { cases_opened: 0, best_drop: null, case_open_stats: {} };
-    let activeEvent = null;
-    let activeFlags = {};
+        // автоматическая смена каждые 10-30 секунд
+        setInterval(addRandomGif, Math.random() * 20000 + 10000);
 
-    const mainHeader = document.querySelector('.main-header');
-    const balanceInfo = document.getElementById('balance-info');
-    const balanceValue = document.getElementById('balance-value');
-    const welcomeMessage = document.getElementById('welcome-message');
-    const casesTitle = document.getElementById('cases-title');
+        // Первый запуск
+        for (let i = 0; i < 5; i++) {
+            addRandomGif();
+        }
 
-    const navLinks = document.querySelectorAll('.nav-menu a');
-    const logoLink = document.getElementById('logo-link');
-    const adminLink = document.getElementById('admin-link');
-    const allSections = document.querySelectorAll('.content-section');
+        let currentCase = null;
+        let telegramUser = null;
+        let userBalance = 100000;
+        let userInventory = [];
+        let userStats = { cases_opened: 0, best_drop: null, case_open_stats: {} };
+        let activeEvent = null;
+        let activeFlags = {};
 
-    const eventSection = document.getElementById('event-section');
-    const eventContainer = document.getElementById('event-container');
-    const eventName = document.getElementById('event-name');
-    const eventDescription = document.getElementById('event-description');
-    const eventTime = document.getElementById('event-time');
+        const mainHeader = document.querySelector('.main-header');
+        const balanceInfo = document.getElementById('balance-info');
+        const balanceValue = document.getElementById('balance-value');
+        const welcomeMessage = document.getElementById('welcome-message');
+        const casesTitle = document.getElementById('cases-title');
 
-    const casesSection = document.getElementById('cases-section');
-    const caseGallery = document.getElementById('case-gallery');
+        const navLinks = document.querySelectorAll('.nav-menu a');
+        const logoLink = document.getElementById('logo-link');
+        const adminLink = document.getElementById('admin-link');
+        const allSections = document.querySelectorAll('.content-section');
 
-    const rouletteSection = document.getElementById('roulette-section');
-    const rouletteCaseTitle = document.getElementById('roulette-case-title');
-    const rouletteItems = document.querySelector('.roulette-items');
-    const openBtn = document.getElementById('open-btn');
-    const openBtnPrice = document.getElementById('open-btn-price');
-    const backButton = document.getElementById('back-button');
+        const eventSection = document.getElementById('event-section');
+        const eventContainer = document.getElementById('event-container');
+        const eventName = document.getElementById('event-name');
+        const eventDescription = document.getElementById('event-description');
+        const eventTime = document.getElementById('event-time');
 
-    const resultModal = document.getElementById('result-modal');
-    const modalItemInfo = document.getElementById('modal-item-info');
-    const itemListContainer = document.getElementById('item-list-container');
-    const itemListTitle = document.getElementById('item-list-title');
-    const itemList = document.getElementById('item-list');
-    const chancesList = document.getElementById('chances-list');
+        const casesSection = document.getElementById('cases-section');
+        const caseGallery = document.getElementById('case-gallery');
 
-    const inventorySection = document.getElementById('inventory-section');
-    const inventoryGrid = document.getElementById('inventory-grid');
-    const inventoryEmptyMessage = document.getElementById('inventory-empty-message');
+        const rouletteSection = document.getElementById('roulette-section');
+        const rouletteCaseTitle = document.getElementById('roulette-case-title');
+        const rouletteItems = document.querySelector('.roulette-items');
+        const openBtn = document.getElementById('open-btn');
+        const openBtnPrice = document.getElementById('open-btn-price');
+        const backButton = document.getElementById('back-button');
 
-    const profileSection = document.getElementById('profile-section');
-    const profilePhoto = document.getElementById('profile-photo');
-    const profileId = document.getElementById('profile-id');
-    const profileName = document.getElementById('profile-name');
-    const profileBalance = document.getElementById('profile-balance');
-    const statCasesOpened = document.getElementById('stat-cases-opened');
-    const statBestDrop = document.getElementById('stat-best-drop');
-    const statFavoriteCase = document.getElementById('stat-favorite-case');
+        const resultModal = document.getElementById('result-modal');
+        const modalItemInfo = document.getElementById('modal-item-info');
+        const itemListContainer = document.getElementById('item-list-container');
+        const itemListTitle = document.getElementById('item-list-title');
+        const itemList = document.getElementById('item-list');
+        const chancesList = document.getElementById('chances-list');
 
-    const adminSection = document.getElementById('admin-section');
-    const balanceForm = document.getElementById('balance-form');
-    const flagsForm = document.getElementById('flags-form');
-    const eventForm = document.getElementById('event-form');
-    
-    async function fetchData() {
-        if (!telegramUser) return;
-        try {
-            const response = await fetch(`${BOT_API_URL}/get_user_data?user_id=${telegramUser.id}`);
-            if (!response.ok) throw new Error('Failed to fetch user data');
-            const data = await response.json();
-            
-            userBalance = data.user_data.balance;
-            userInventory = data.user_data.inventory;
-            userStats = data.user_data.stats;
-            activeEvent = data.event;
-            activeFlags = data.flags;
+        const inventorySection = document.getElementById('inventory-section');
+        const inventoryGrid = document.getElementById('inventory-grid');
+        const inventoryEmptyMessage = document.getElementById('inventory-empty-message');
 
-            updateBalanceDisplay();
-            displayEvent();
+        const profileSection = document.getElementById('profile-section');
+        const profilePhoto = document.getElementById('profile-photo');
+        const profileId = document.getElementById('profile-id');
+        const profileName = document.getElementById('profile-name');
+        const profileBalance = document.getElementById('profile-balance');
+        const statCasesOpened = document.getElementById('stat-cases-opened');
+        const statBestDrop = document.getElementById('stat-best-drop');
+        const statFavoriteCase = document.getElementById('stat-favorite-case');
 
-            if (currentCase) {
-                populateRoulette(currentCase.items);
-                populateItemList(currentCase.items);
-                populateChancesList(currentCase.items);
+        const adminSection = document.getElementById('admin-section');
+        const balanceForm = document.getElementById('balance-form');
+        const flagsForm = document.getElementById('flags-form');
+        const eventForm = document.getElementById('event-form');
+
+        async function fetchData() {
+            if (!telegramUser) return;
+            try {
+                const response = await fetch(`${BOT_API_URL}/get_user_data?user_id=${telegramUser.id}`);
+                if (!response.ok) throw new Error('Failed to fetch user data');
+                const data = await response.json();
+
+                userBalance = data.user_data.balance;
+                userInventory = data.user_data.inventory;
+                userStats = data.user_data.stats;
+                activeEvent = data.event;
+                activeFlags = data.flags;
+
+                updateBalanceDisplay();
+                displayEvent();
+
+                if (currentCase) {
+                    populateRoulette(currentCase.items);
+                    populateItemList(currentCase.items);
+                    populateChancesList(currentCase.items);
+                }
+
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+
+        function getModifiedChances(items) {
+            let modifiedItems = items.map(item => ({ ...item }));
+
+            if (activeFlags['100_per_rarity_super']) {
+                modifiedItems.forEach(item => {
+                    if (item.rarity_color === 'super-legendary') {
+                        item.chance = 100;
+                    } else {
+                        item.chance = 0;
+                    }
+                });
+                return modifiedItems;
             }
 
-        } catch (error) {
-            console.error('Error fetching data:', error);
-        }
-    }
+            if (activeFlags['100_per_rarity']) {
+                modifiedItems.forEach(item => {
+                    if (item.rarity_color === 'legendary' || item.rarity_color === 'super-legendary') {
+                        item.chance = 100;
+                    } else {
+                        item.chance = 0;
+                    }
+                });
+                return modifiedItems;
+            }
 
-    function getModifiedChances(items) {
-        let modifiedItems = items.map(item => ({ ...item }));
+            let totalChanceMultiplier = 1;
+            if (activeFlags['trible_chances']) {
+                totalChanceMultiplier = 3;
+            } else if (activeFlags['double_chances']) {
+                totalChanceMultiplier = 2;
+            }
 
-        if (activeFlags['100_per_rarity_super']) {
-            modifiedItems.forEach(item => {
-                if (item.rarity_color === 'super-legendary') {
-                    item.chance = 100;
-                } else {
-                    item.chance = 0;
-                }
-            });
+            if (totalChanceMultiplier > 1) {
+                const rareAndAbove = modifiedItems.filter(item => ['super-legendary', 'legendary', 'epic', 'rare'].includes(item.rarity_color));
+                const commonAndUnusual = modifiedItems.filter(item => ['common', 'unusual'].includes(item.rarity_color));
+
+                const totalRareAndAboveChance = rareAndAbove.reduce((sum, item) => sum + item.chance, 0);
+                const totalCommonAndUnusualChance = commonAndUnusual.reduce((sum, item) => sum + item.chance, 0);
+
+                rareAndAbove.forEach(item => {
+                    item.chance *= totalChanceMultiplier;
+                });
+
+                const newTotalRareAndAboveChance = rareAndAbove.reduce((sum, item) => sum + item.chance, 0);
+                const difference = newTotalRareAndAboveChance - totalRareAndAboveChance;
+
+                const adjustedCommonAndUnusualChance = Math.max(0, totalCommonAndUnusualChance - difference);
+                const adjustmentRatio = totalCommonAndUnusualChance > 0 ? adjustedCommonAndUnusualChance / totalCommonAndUnusualChance : 0;
+
+                commonAndUnusual.forEach(item => {
+                    item.chance *= adjustmentRatio;
+                });
+
+                modifiedItems = [...rareAndAbove, ...commonAndUnusual];
+            }
+
             return modifiedItems;
         }
 
-        if (activeFlags['100_per_rarity']) {
-            modifiedItems.forEach(item => {
-                if (item.rarity_color === 'legendary' || item.rarity_color === 'super-legendary') {
-                    item.chance = 100;
-                } else {
-                    item.chance = 0;
-                }
-            });
-            return modifiedItems;
-        }
-
-        let totalChanceMultiplier = 1;
-        if (activeFlags['trible_chances']) {
-            totalChanceMultiplier = 3;
-        } else if (activeFlags['double_chances']) {
-            totalChanceMultiplier = 2;
-        }
-
-        if (totalChanceMultiplier > 1) {
-            const rareAndAbove = modifiedItems.filter(item => ['super-legendary', 'legendary', 'epic', 'rare'].includes(item.rarity_color));
-            const commonAndUnusual = modifiedItems.filter(item => ['common', 'unusual'].includes(item.rarity_color));
-
-            const totalRareAndAboveChance = rareAndAbove.reduce((sum, item) => sum + item.chance, 0);
-            const totalCommonAndUnusualChance = commonAndUnusual.reduce((sum, item) => sum + item.chance, 0);
-
-            rareAndAbove.forEach(item => {
-                item.chance *= totalChanceMultiplier;
-            });
-
-            const newTotalRareAndAboveChance = rareAndAbove.reduce((sum, item) => sum + item.chance, 0);
-            const difference = newTotalRareAndAboveChance - totalRareAndAboveChance;
-
-            const adjustedCommonAndUnusualChance = Math.max(0, totalCommonAndUnusualChance - difference);
-            const adjustmentRatio = totalCommonAndUnusualChance > 0 ? adjustedCommonAndUnusualChance / totalCommonAndUnusualChance : 0;
-
-            commonAndUnusual.forEach(item => {
-                item.chance *= adjustmentRatio;
-            });
-
-            modifiedItems = [...rareAndAbove, ...commonAndUnusual];
-        }
-
-        return modifiedItems;
-    }
-
-    function createItemElement(item) {
-        const card = document.createElement('div');
-        card.innerHTML = `
-            <img src="${item.file}" alt="${item.name}" class="item-gif">
-            <div class="item-name">${item.name}</div>
-            <div class="item-price">${typeof item.price === 'number' ? item.price : item.price} ⭐</div>
-        `;
-        return card;
-    }
-
-    function populateCaseGallery() {
-        caseGallery.innerHTML = '';
-        cases.forEach(caseItem => {
+        function createItemElement(item) {
             const card = document.createElement('div');
-            card.classList.add('case-card');
-            card.dataset.caseId = caseItem.id;
-            card.innerHTML = `
-                <img src="${caseItem.image}" alt="${caseItem.name}">
-                <h3>${caseItem.name}</h3>
-                <p>${caseItem.price} ⭐</p>
-            `;
-            card.addEventListener('click', () => showCaseDetails(caseItem.id));
-            caseGallery.appendChild(card);
-        });
-    }
-
-    function showCaseDetails(caseId) {
-        currentCase = cases.find(c => c.id === caseId);
-        if (!currentCase) {
-            alert('Кейс не найден!');
-            return;
-        }
-
-        switchSection('roulette');
-
-        rouletteCaseTitle.textContent = currentCase.name;
-        openBtnPrice.textContent = currentCase.price;
-
-        populateRoulette(currentCase.items);
-        populateItemList(currentCase.items);
-        populateChancesList(currentCase.items);
-        itemListTitle.textContent = `содержимое кейса`;
-    }
-
-    function getRandomItemByChance(items) {
-        const totalChance = items.reduce((sum, item) => sum + item.chance, 0);
-        let random = Math.random() * totalChance;
-
-        for (let i = 0; i < items.length; i++) {
-            if (random < items[i].chance) {
-                return items[i];
-            }
-            random -= items[i].chance;
-        }
-        
-        return items[items.length - 1];
-    }
-
-    function populateRoulette(items) {
-        rouletteItems.innerHTML = '';
-        const itemsToDisplay = [];
-        const modifiedItems = getModifiedChances(items);
-        for (let i = 0; i < 50; i++) {
-            const randomItem = getRandomItemByChance(modifiedItems);
-            itemsToDisplay.push(randomItem);
-        }
-        itemsToDisplay.forEach(item => rouletteItems.appendChild(createItemElement(item)));
-    }
-
-    function populateItemList(items) {
-        itemList.innerHTML = '';
-        const modifiedItems = getModifiedChances(items);
-        const totalModifiedChance = modifiedItems.reduce((sum, item) => sum + item.chance, 0);
-
-        modifiedItems.forEach(item => {
-            const card = document.createElement('div');
-            card.classList.add('item-list-card', item.rarity_color);
-            const actualChance = (item.chance / totalModifiedChance) * 100;
             card.innerHTML = `
                 <img src="${item.file}" alt="${item.name}" class="item-gif">
                 <div class="item-name">${item.name}</div>
                 <div class="item-price">${typeof item.price === 'number' ? item.price : item.price} ⭐</div>
-                <div class="item-chance">${actualChance.toFixed(2)}%</div>
             `;
-            itemList.appendChild(card);
-        });
-    }
-
-    function populateChancesList(items) {
-        chancesList.innerHTML = '';
-        const rarityChances = {};
-        const modifiedItems = getModifiedChances(items);
-        const totalModifiedChance = modifiedItems.reduce((sum, item) => sum + item.chance, 0);
-
-        modifiedItems.forEach(item => {
-            if (!rarityChances[item.rarity_ru]) {
-                rarityChances[item.rarity_ru] = {
-                    chance: 0,
-                    color: item.rarity_color
-                };
-            }
-            rarityChances[item.rarity_ru].chance += item.chance;
-        });
-
-        for (const rarity in rarityChances) {
-            const li = document.createElement('li');
-            const actualChance = (rarityChances[rarity].chance / totalModifiedChance) * 100;
-            li.textContent = `${rarity}: ${actualChance.toFixed(2)}%`;
-            li.classList.add(`chance-${rarityChances[rarity].color}`);
-            chancesList.appendChild(li);
+            return card;
         }
-    }
 
-    async function openCase() {
-        if (!currentCase) return;
-
-        openBtn.disabled = true;
-
-        try {
-            const response = await fetch(`${BOT_API_URL}/open_case`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    user_id: telegramUser.id,
-                    case_id: currentCase.id,
-                    cases_data: cases
-                }),
+        function populateCaseGallery() {
+            caseGallery.innerHTML = '';
+            cases.forEach(caseItem => {
+                const card = document.createElement('div');
+                card.classList.add('case-card');
+                card.dataset.caseId = caseItem.id;
+                card.innerHTML = `
+                    <img src="${caseItem.image}" alt="${caseItem.name}">
+                    <h3>${caseItem.name}</h3>
+                    <p>${caseItem.price} ⭐</p>
+                `;
+                card.addEventListener('click', () => showCaseDetails(caseItem.id));
+                caseGallery.appendChild(card);
             });
+        }
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || 'Ошибка при открытии кейса');
+        function showCaseDetails(caseId) {
+            currentCase = cases.find(c => c.id === caseId);
+            if (!currentCase) {
+                alert('Кейс не найден!');
+                return;
             }
 
-            const data = await response.json();
-            const winningItem = data.winning_item;
-            userBalance = data.new_balance;
+            switchSection('roulette');
 
-            updateBalanceDisplay();
-            
-            const finalPosition = 25;
-            const newItems = [];
-            for (let i = 0; i < finalPosition; i++) {
-                newItems.push(getRandomItemByChance(currentCase.items));
-            }
-            newItems.push(winningItem);
-            for (let i = finalPosition + 1; i < 50; i++) {
-                newItems.push(getRandomItemByChance(currentCase.items));
+            rouletteCaseTitle.textContent = currentCase.name;
+            openBtnPrice.textContent = currentCase.price;
+
+            populateRoulette(currentCase.items);
+            populateItemList(currentCase.items);
+            populateChancesList(currentCase.items);
+            itemListTitle.textContent = `содержимое кейса`;
+        }
+
+        function getRandomItemByChance(items) {
+            const totalChance = items.reduce((sum, item) => sum + item.chance, 0);
+            let random = Math.random() * totalChance;
+
+            for (let i = 0; i < items.length; i++) {
+                if (random < items[i].chance) {
+                    return items[i];
+                }
+                random -= items[i].chance;
             }
 
+            return items[items.length - 1];
+        }
+
+        function populateRoulette(items) {
             rouletteItems.innerHTML = '';
-            newItems.forEach((item) => {
-                const card = createItemElement(item);
-                rouletteItems.appendChild(card);
-            });
-
-            const itemWidth = rouletteItems.querySelector('.item-card').offsetWidth + 20;
-            const offset = (rouletteItems.offsetWidth / 2) - (itemWidth / 2);
-            const finalTranslateX = -((finalPosition * itemWidth) - offset);
-
-            rouletteItems.style.transition = 'transform 6s cubic-bezier(0.25, 1, 0.5, 1)';
-            rouletteItems.style.transform = `translateX(${finalTranslateX}px)`;
-
-            setTimeout(() => {
-                openBtn.disabled = false;
-                // Обновляем содержимое модалки только изображением
-                modalItemInfo.innerHTML = `
-        <span class="modal-close" onclick="closeModal()">&times;</span>
-        <img src="${winningItem.file}" alt="${winningItem.name}" class="item-gif">
-    `;
-                // Убираем добавление текста с названием
-                // Можно оставить класс для стилизации, если нужно
-                modalItemInfo.className = `modal-content modal-${winningItem.rarity_color}`;
-                resultModal.style.display = 'flex';
-
-                rouletteItems.style.transition = 'none';
-                rouletteItems.style.transform = 'translateX(0)';
-                populateRoulette(currentCase.items);
-                fetchData();
-
-            }, 6000);
-
-        } catch (error) {
-            openBtn.disabled = false;
-            alert(error.message);
-            console.error('Error opening case:', error);
-        }
-    }
-
-    function closeModal() {
-        resultModal.style.display = 'none';
-        modalItemInfo.className = 'modal-content';
-    }
-
-    function updateBalanceDisplay() {
-        balanceValue.textContent = userBalance;
-    }
-
-    function switchSection(sectionId) {
-        allSections.forEach(section => {
-            section.style.display = 'none';
-        });
-
-        const targetSection = document.getElementById(`${sectionId}-section`);
-        if (targetSection) {
-            targetSection.style.display = 'block';
-            if (sectionId === 'cases') {
-                itemListContainer.style.display = 'none';
-            } else if (sectionId === 'roulette') {
-                itemListContainer.style.display = 'block';
-            } else if (sectionId === 'admin') {
-                itemListContainer.style.display = 'none';
-            } else {
-                itemListContainer.style.display = 'none';
+            const itemsToDisplay = [];
+            const modifiedItems = getModifiedChances(items);
+            for (let i = 0; i < 50; i++) {
+                const randomItem = getRandomItemByChance(modifiedItems);
+                itemsToDisplay.push(randomItem);
             }
+            itemsToDisplay.forEach(item => rouletteItems.appendChild(createItemElement(item)));
         }
-    }
 
-    function renderInventory() {
-        inventoryGrid.innerHTML = '';
-        if (userInventory.length === 0) {
-            inventoryEmptyMessage.style.display = 'block';
-        } else {
-            inventoryEmptyMessage.style.display = 'none';
-            userInventory.forEach(item => {
+        function populateItemList(items) {
+            itemList.innerHTML = '';
+            const modifiedItems = getModifiedChances(items);
+            const totalModifiedChance = modifiedItems.reduce((sum, item) => sum + item.chance, 0);
+
+            modifiedItems.forEach(item => {
                 const card = document.createElement('div');
                 card.classList.add('item-list-card', item.rarity_color);
+                const actualChance = (item.chance / totalModifiedChance) * 100;
                 card.innerHTML = `
                     <img src="${item.file}" alt="${item.name}" class="item-gif">
                     <div class="item-name">${item.name}</div>
                     <div class="item-price">${typeof item.price === 'number' ? item.price : item.price} ⭐</div>
+                    <div class="item-chance">${actualChance.toFixed(2)}%</div>
                 `;
-                inventoryGrid.appendChild(card);
+                itemList.appendChild(card);
             });
         }
-    }
 
-    function renderProfile() {
-        if (!telegramUser) return;
+        function populateChancesList(items) {
+            chancesList.innerHTML = '';
+            const rarityChances = {};
+            const modifiedItems = getModifiedChances(items);
+            const totalModifiedChance = modifiedItems.reduce((sum, item) => sum + item.chance, 0);
 
-        profileId.textContent = telegramUser.id;
-        profileName.textContent = telegramUser.first_name || 'Пользователь';
-        profileBalance.textContent = userBalance;
+            modifiedItems.forEach(item => {
+                if (!rarityChances[item.rarity_ru]) {
+                    rarityChances[item.rarity_ru] = {
+                        chance: 0,
+                        color: item.rarity_color
+                    };
+                }
+                rarityChances[item.rarity_ru].chance += item.chance;
+            });
 
-        if (telegramUser.photo_url) {
-            profilePhoto.src = telegramUser.photo_url;
-        } else {
-            profilePhoto.src = 'https://via.placeholder.com/120?text=No+Photo';
-        }
-
-        statCasesOpened.textContent = userStats.cases_opened;
-        statBestDrop.textContent = userStats.best_drop ? `${userStats.best_drop.name} (${userStats.best_drop.price} ⭐)` : 'Нет';
-
-        let maxOpened = 0;
-        let favoriteCaseName = 'Нет';
-        for (const caseId in userStats.case_open_stats) {
-            if (userStats.case_open_stats[caseId] > maxOpened) {
-                maxOpened = userStats.case_open_stats[caseId];
-                const caseItem = cases.find(c => c.id === caseId);
-                favoriteCaseName = caseItem ? caseItem.name : 'Неизвестно';
+            for (const rarity in rarityChances) {
+                const li = document.createElement('li');
+                const actualChance = (rarityChances[rarity].chance / totalModifiedChance) * 100;
+                li.textContent = `${rarity}: ${actualChance.toFixed(2)}%`;
+                li.classList.add(`chance-${rarityChances[rarity].color}`);
+                chancesList.appendChild(li);
             }
         }
-        statFavoriteCase.textContent = favoriteCaseName;
-    }
-    
-    function displayEvent() {
-        if (!activeEvent) {
-            eventSection.style.display = 'none';
-            return;
+
+        async function openCase() {
+            if (!currentCase) return;
+
+            openBtn.disabled = true;
+
+            try {
+                const response = await fetch(`${BOT_API_URL}/open_case`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        user_id: telegramUser.id,
+                        case_id: currentCase.id,
+                        cases_data: cases
+                    }),
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Ошибка при открытии кейса');
+                }
+
+                const data = await response.json();
+                const winningItem = data.winning_item;
+                userBalance = data.new_balance;
+
+                updateBalanceDisplay();
+
+                const finalPosition = 25;
+                const newItems = [];
+                for (let i = 0; i < finalPosition; i++) {
+                    newItems.push(getRandomItemByChance(currentCase.items));
+                }
+                newItems.push(winningItem);
+                for (let i = finalPosition + 1; i < 50; i++) {
+                    newItems.push(getRandomItemByChance(currentCase.items));
+                }
+
+                rouletteItems.innerHTML = '';
+                newItems.forEach((item) => {
+                    const card = createItemElement(item);
+                    rouletteItems.appendChild(card);
+                });
+
+                const itemWidth = rouletteItems.querySelector('.item-card').offsetWidth + 20;
+                const offset = (rouletteItems.offsetWidth / 2) - (itemWidth / 2);
+                const finalTranslateX = -((finalPosition * itemWidth) - offset);
+
+                rouletteItems.style.transition = 'transform 6s cubic-bezier(0.25, 1, 0.5, 1)';
+                rouletteItems.style.transform = `translateX(${finalTranslateX}px)`;
+
+                setTimeout(() => {
+                    openBtn.disabled = false;
+                    // Обновляем содержимое модалки только изображением
+                    modalItemInfo.innerHTML = `
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <img src="${winningItem.file}" alt="${winningItem.name}" class="item-gif">
+        `;
+                    // Убираем добавление текста с названием
+                    // Можно оставить класс для стилизации, если нужно
+                    modalItemInfo.className = `modal-content modal-${winningItem.rarity_color}`;
+                    resultModal.style.display = 'flex';
+
+                    rouletteItems.style.transition = 'none';
+                    rouletteItems.style.transform = 'translateX(0)';
+                    populateRoulette(currentCase.items);
+                    fetchData();
+
+                }, 6000);
+
+            } catch (error) {
+                openBtn.disabled = false;
+                alert(error.message);
+                console.error('Error opening case:', error);
+            }
         }
 
-        eventSection.style.display = 'block';
-        eventName.textContent = activeEvent.name;
-        eventDescription.textContent = activeEvent.description;
-        eventTime.textContent = `Осталось: ${activeEvent.time} ч.`;
-        
-        const colors = {
-            red: '#ff0055',
-            gold: '#ffc107',
-            white: '#e0e0e0',
-            green: '#4caf50',
-            blue: '#2196f3'
-        };
-        const color = colors[activeEvent.color] || colors.red;
+        function closeModal() {
+            resultModal.style.display = 'none';
+            modalItemInfo.className = 'modal-content';
+        }
 
-        eventContainer.style.setProperty('--color-event', color);
-        eventContainer.style.setProperty('--color-event-shadow', `${color}80`);
-    }
+        function updateBalanceDisplay() {
+            balanceValue.textContent = userBalance;
+        }
 
-    openBtn.addEventListener('click', openCase);
-    backButton.addEventListener('click', () => switchSection('cases'));
+        function switchSection(sectionId) {
+            allSections.forEach(section => {
+                section.style.display = 'none';
+            });
 
-    navLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            const section = e.target.dataset.section;
-            if (section === 'upgrade') {
-                alert('Скоро...');
-            } else {
-                switchSection(section);
-                if (section === 'inventory') {
-                    renderInventory();
-                } else if (section === 'profile') {
-                    renderProfile();
+            const targetSection = document.getElementById(`${sectionId}-section`);
+            if (targetSection) {
+                targetSection.style.display = 'block';
+                if (sectionId === 'cases') {
+                    itemListContainer.style.display = 'none';
+                } else if (sectionId === 'roulette') {
+                    itemListContainer.style.display = 'block';
+                } else if (sectionId === 'admin') {
+                    itemListContainer.style.display = 'none';
+                } else {
+                    itemListContainer.style.display = 'none';
                 }
+            }
+        }
+
+        function renderInventory() {
+            inventoryGrid.innerHTML = '';
+            if (userInventory.length === 0) {
+                inventoryEmptyMessage.style.display = 'block';
+            } else {
+                inventoryEmptyMessage.style.display = 'none';
+                userInventory.forEach(item => {
+                    const card = document.createElement('div');
+                    card.classList.add('item-list-card', item.rarity_color);
+                    card.innerHTML = `
+                        <img src="${item.file}" alt="${item.name}" class="item-gif">
+                        <div class="item-name">${item.name}</div>
+                        <div class="item-price">${typeof item.price === 'number' ? item.price : item.price} ⭐</div>
+                    `;
+                    inventoryGrid.appendChild(card);
+                });
+            }
+        }
+
+        function renderProfile() {
+            if (!telegramUser) return;
+
+            profileId.textContent = telegramUser.id;
+            profileName.textContent = telegramUser.first_name || 'Пользователь';
+            profileBalance.textContent = userBalance;
+
+            if (telegramUser.photo_url) {
+                profilePhoto.src = telegramUser.photo_url;
+            } else {
+                profilePhoto.src = 'https://via.placeholder.com/120?text=No+Photo';
+            }
+
+            statCasesOpened.textContent = userStats.cases_opened;
+            statBestDrop.textContent = userStats.best_drop ? `${userStats.best_drop.name} (${userStats.best_drop.price} ⭐)` : 'Нет';
+
+            let maxOpened = 0;
+            let favoriteCaseName = 'Нет';
+            for (const caseId in userStats.case_open_stats) {
+                if (userStats.case_open_stats[caseId] > maxOpened) {
+                    maxOpened = userStats.case_open_stats[caseId];
+                    const caseItem = cases.find(c => c.id === caseId);
+                    favoriteCaseName = caseItem ? caseItem.name : 'Неизвестно';
+                }
+            }
+            statFavoriteCase.textContent = favoriteCaseName;
+        }
+
+        function displayEvent() {
+            if (!activeEvent) {
+                eventSection.style.display = 'none';
+                return;
+            }
+
+            eventSection.style.display = 'block';
+            eventName.textContent = activeEvent.name;
+            eventDescription.textContent = activeEvent.description;
+            eventTime.textContent = `Осталось: ${activeEvent.time} ч.`;
+
+            const colors = {
+                red: '#ff0055',
+                gold: '#ffc107',
+                white: '#e0e0e0',
+                green: '#4caf50',
+                blue: '#2196f3'
+            };
+            const color = colors[activeEvent.color] || colors.red;
+
+            eventContainer.style.setProperty('--color-event', color);
+            eventContainer.style.setProperty('--color-event-shadow', `${color}80`);
+        }
+
+        openBtn.addEventListener('click', openCase);
+        backButton.addEventListener('click', () => switchSection('cases'));
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const section = e.target.dataset.section;
+                if (section === 'upgrade') {
+                    alert('Скоро...');
+                } else {
+                    switchSection(section);
+                    if (section === 'inventory') {
+                        renderInventory();
+                    } else if (section === 'profile') {
+                        renderProfile();
+                    }
+                }
+            });
+        });
+
+        logoLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            switchSection('cases');
+        });
+
+        balanceForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const userId = document.getElementById('balance-id').value;
+            const amount = parseInt(document.getElementById('balance-amount').value);
+            try {
+                const response = await fetch(`${BOT_API_URL}/admin/give_balance`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ admin_id: telegramUser.id, user_id: userId, amount: amount })
+                });
+                console.log('Response status:', response.status);
+                const result = await response.json();
+                console.log('Result:', result);
+                if (result.success) {
+                    alert('Баланс успешно выдан!');
+                } else {
+                    alert(`Ошибка: ${result.error}`);
+                }
+                fetchData();
+            } catch (error) {
+                alert('Ошибка при отправке запроса.');
+                console.error(error);
             }
         });
-    });
 
-    logoLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        switchSection('cases');
-    });
-    
-    balanceForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const userId = document.getElementById('balance-id').value;
-        const amount = parseInt(document.getElementById('balance-amount').value);
-        try {
-            const response = await fetch(`${BOT_API_URL}/admin/give_balance`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ admin_id: telegramUser.id, user_id: userId, amount: amount })
-            });
-            console.log('Response status:', response.status);
-            const result = await response.json();
-            console.log('Result:', result);
-            if (result.success) {
-                alert('Баланс успешно выдан!');
-            } else {
-                alert(`Ошибка: ${result.error}`);
-            }
-            fetchData();
-        } catch (error) {
-            alert('Ошибка при отправке запроса.');
-            console.error(error);
-        }
-    });
-
-    flagsForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const flag = document.getElementById('flag-select').value;
-        const value = document.getElementById('flag-value').value;
-        try {
-            const response = await fetch(`${BOT_API_URL}/admin/set_flags`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ admin_id: telegramUser.id, flag: flag, value: value })
-            });
-            const result = await response.json();
-            if (result.success) {
-                alert('Флаги успешно обновлены!');
-            } else {
-                alert(`Ошибка: ${result.error}`);
-            }
-            fetchData();
-        } catch (error) { alert('Ошибка при отправке запроса.'); }
-    });
-
-    eventForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const event_data = {
-            name: document.getElementById('event-name-input').value,
-            time: document.getElementById('event-time-input').value,
-            description: document.getElementById('event-description-input').value,
-            color: document.getElementById('event-color-select').value
-        };
-        try {
-            const response = await fetch(`${BOT_API_URL}/admin/create_event`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ admin_id: telegramUser.id, event_data: event_data })
-            });
-            const result = await response.json();
-            if (result.success) {
-                alert('Событие успешно создано!');
-            } else {
-                alert(`Ошибка: ${result.error}`);
-            }
-            fetchData();
-        } catch (error) { alert('Ошибка при отправке запроса.'); }
-    });
-
-    function initApp() {
-        if (window.Telegram && window.Telegram.WebApp) {
-            const initData = Telegram.WebApp.initDataUnsafe;
-            if (initData.user) {
-                telegramUser = initData.user;
-                
-                mainHeader.style.display = 'flex';
-                balanceInfo.style.display = 'flex';
-                
-                if (telegramUser.id === ADMIN_ID) {
-                    adminLink.style.display = 'block';
+        flagsForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const flag = document.getElementById('flag-select').value;
+            const value = document.getElementById('flag-value').value;
+            try {
+                const response = await fetch(`${BOT_API_URL}/admin/set_flags`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ admin_id: telegramUser.id, flag: flag, value: value })
+                });
+                const result = await response.json();
+                if (result.success) {
+                    alert('Флаги успешно обновлены!');
+                } else {
+                    alert(`Ошибка: ${result.error}`);
                 }
-
                 fetchData();
-                switchSection('cases');
-                populateCaseGallery();
+            } catch (error) { alert('Ошибка при отправке запроса.'); }
+        });
+
+        eventForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const event_data = {
+                name: document.getElementById('event-name-input').value,
+                time: document.getElementById('event-time-input').value,
+                description: document.getElementById('event-description-input').value,
+                color: document.getElementById('event-color-select').value
+            };
+            try {
+                const response = await fetch(`${BOT_API_URL}/admin/create_event`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ admin_id: telegramUser.id, event_data: event_data })
+                });
+                const result = await response.json();
+                if (result.success) {
+                    alert('Событие успешно создано!');
+                } else {
+                    alert(`Ошибка: ${result.error}`);
+                }
+                fetchData();
+            } catch (error) { alert('Ошибка при отправке запроса.'); }
+        });
+
+        function initApp() {
+            if (window.Telegram && window.Telegram.WebApp) {
+                const initData = Telegram.WebApp.initDataUnsafe;
+                if (initData.user) {
+                    telegramUser = initData.user;
+
+                    mainHeader.style.display = 'flex';
+                    balanceInfo.style.display = 'flex';
+
+                    if (telegramUser.id === ADMIN_ID) {
+                        adminLink.style.display = 'block';
+                    }
+
+                    fetchData();
+                    switchSection('cases');
+                    populateCaseGallery();
+                } else {
+                    welcomeMessage.style.display = 'block';
+                }
             } else {
                 welcomeMessage.style.display = 'block';
             }
-        } else {
-            welcomeMessage.style.display = 'block';
+
+            setInterval(fetchData, 5000);
         }
-        
-        setInterval(fetchData, 5000);
-    }
 
-    document.addEventListener('DOMContentLoaded', initApp);
+        document.addEventListener('DOMContentLoaded', initApp);
 
-    window.closeModal = closeModal;
-    window.addEventListener('click', (event) => {
-        if (event.target === resultModal) {
-            closeModal();
-        }
-    });
+        window.closeModal = closeModal;
+        window.addEventListener('click', (event) => {
+            if (event.target === resultModal) {
+                closeModal();
+            }
+        });
 
-</script>
+    </script>
 
 </body>
 </html>
