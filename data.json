@@ -1,0 +1,18 @@
+{
+    "users": {
+        "user_id": 8028638705,
+        "balance": 10000,
+        "inventory": [],
+        "stats": {
+            "cases_opened": 0,
+            "best_drop": "None",
+            "case_open_stats": {}
+        },
+        "flags": {
+            "100_per_rarity_super": false,
+            "100_per_rarity": false,
+            "double_chances": false,
+            "trible_chances": false
+        },
+        "event": null
+    }
