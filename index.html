@@ -255,8 +255,8 @@
         .case-gallery {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
+            gap: 10px;
+            margin-top: 5px;
         }
 
 
@@ -782,7 +782,7 @@
             }
 
             .case-gallery {
-                gap: 10px;
+                gap: 5px;
             }
 
             .case-card {
@@ -845,7 +845,7 @@
             .case-gallery {
                 display: flex;
                 flex-wrap: wrap;
-                gap: 10px; /* расстояние между кейсами */
+                gap: 5px; /* расстояние между кейсами */
                 justify-content: center;
             }
 
@@ -1112,10 +1112,6 @@
     </style>
 </head>
 <body>
-    <div id="gift-feed" style="margin-top: 10px; padding: 10px 20px; background: rgba(0,0,0,0.4); border-radius: 8px; display: flex; align-items: center; gap: 5px; overflow: hidden; max-width: 100%; margin-left: auto; margin-right: auto;">
-        <h3 style="margin: 0; font-size: 14px; color: #fff;">Life: </h3>
-        <div id="gif-container" style="display:flex; gap:5px; height:30px; overflow:hidden;"></div>
-    </div>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <header class="main-header">
         <div class="logo-section">
@@ -1149,6 +1145,13 @@
                 <p id="event-time"></p>
             </div>
         </div>
+
+        <div id="gift-feed" style="margin-top: 10px; padding: 10px 20px; background: rgba(0,0,0,0.4); border-radius: 8px; display: flex; align-items: center; gap: 5px; overflow: hidden; max-width: 100%; margin-left: auto; margin-right: auto;">
+            <h3 style="margin: 0; font-size: 14px; color: #fff;">Life: </h3>
+            <div id="gif-container" style="display:flex; gap:5px; height:30px; overflow:hidden;"></div>
+        </div>
+
+        <div style="height:20px;"></div>
 
         <div class="content-section" id="cases-section">
             <h1 id="cases-title">Выберите кейс</h1>
@@ -1339,10 +1342,14 @@
             const gif = document.createElement('img');
             gif.src = giftGifs[Math.floor(Math.random() * giftGifs.length)];
             gif.className = 'gif-item';
-            gifContainer.appendChild(gif);
-            // Удаляем старые, чтобы не было переполнения
-            if (gifContainer.children.length > 10) {
-                gifContainer.removeChild(gifContainer.firstChild);
+
+            // Добавляем в левую часть (в начало)
+            gifContainer.insertBefore(gif, gifContainer.firstChild);
+
+            // Удаляем самый старый с конца, если элементов больше лимита
+            const maxGifs = 10; // или любой другой лимит
+            if (gifContainer.children.length > maxGifs) {
+                gifContainer.removeChild(gifContainer.lastChild);
             }
         }
 
