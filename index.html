@@ -261,31 +261,61 @@
         }
 
         .case-card {
-            background-color: #3f4c5c; /* фиксированный фон */
+            background: #3f4c5c; /* базовый фон, можно оставить или убрать если нужен прозрачный фон */
             border: 1px solid var(--color-card-border);
             border-radius: 10px;
-            padding: 25px;
+            padding: 0; /* убрали внутренний отступ, чтобы фото было по краям */
             text-align: center;
             cursor: pointer;
             transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
-            width: 100%; /* занимать всю ячейку сетки */
-            box-shadow: 0 8px 25px var(--color-card-shadow);
+            width: 150px; /* или нужная ширина */
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
             position: relative;
             overflow: hidden;
-            margin: 10px 0; /* вертикальные отступы для разделения */
         }
 
         .case-card::after {
-            content: "";
-            position: absolute;
-            bottom: -30px;
-            left: 0;
-            width: 100%;
-            height: 8px;
-            background: #2d3947;
-            border-radius: 0 0 10px 10px;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+                content: attr(data-price) + ' ⭐'; /* динамическая цена */
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                padding: 4px 8px;
+                background: rgba(0,0,0,0.5);
+                font-size: 0.9em;
+                color: #fff;
+                font-weight: bold;
+                border-top-left-radius: 8px;
+                border-top-right-radius: 8px;
+                text-align: center;
             }
+
+        /* Обертка для фото и названия */
+        .case-image-wrapper {
+            position: relative;
+        }
+
+        /* Фото кейса */
+        .case-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 10px 10px 0 0;
+            transition: transform 0.3s;
+        }
+
+        /* Название кейса поверх фото */
+        .case-title {
+            position: absolute;
+            bottom: 4px;
+            width: 100%;
+            text-align: center;
+            font-size: 0.9em;
+            color: #fff;
+            font-family: 'Oswald', sans-serif;
+            text-shadow: 0 0 5px rgba(0,0,0,0.7);
+            padding: 0 4px;
+        }
 
         .case-card::before {
             content: '';
@@ -328,39 +358,6 @@
             font-weight: bold;
             color: #fff;
             text-shadow: rgba(0, 0, 0, 0.4);
-        }
-
-        .case-title {
-            font-family: 'Oswald', sans-serif;
-            font-size: 1.2em;
-            color: #fff;
-            margin-bottom: 8px;
-            text-align: center;
-        }
-
-        /* Фото внутри карточки */
-        .case-image {
-            width: 100%;
-            height: auto;
-            border-radius: 8px;
-            display: block;
-            max-height: 150px;
-            object-fit: contain;
-            z-index: 1;
-        }
-
-        /* Подложка для цены — внизу карточки */
-        .case-price {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            padding: 8px 0;
-            background: rgba(0, 0, 0, 0.6);
-            font-size: 0.9em;
-            color: #fff;
-            text-align: center;
-            border-top: 1px solid rgba(255,255,255,0.3);
         }
 
         .roulette-section {
@@ -1563,11 +1560,10 @@
                 const card = document.createElement('div');
                 card.classList.add('case-card');
                 card.dataset.caseId = caseItem.id;
-                card.innerHTML = `
-                            <img src="${caseItem.image}" alt="${caseItem.name}">
-                            <h3>${caseItem.name}</h3>
-                            <p>${caseItem.price} ⭐</p>
-                        `;
+                card.innerHTML = ` <div class="case-image-wrapper">
+                                       <img src="${caseItem.image}" alt="${caseItem.name}" class="case-image">
+                                       <div class="case-title">${caseItem.name}</div>
+                                   </div>`;
                 card.addEventListener('click', () => showCaseDetails(caseItem.id));
                 caseGallery.appendChild(card);
             });
@@ -1585,27 +1581,24 @@
             rouletteCaseTitle.textContent = currentCase.name;
             openBtnPrice.textContent = currentCase.price;
 
-            // обновляем карточки
             populateRoulette(currentCase.items);
             populateItemList(currentCase.items);
             populateChancesList(currentCase.items);
             itemListTitle.textContent = `содержимое кейса`;
+        }
 
-            // Обновляем галерею кейсов
-            caseGallery.innerHTML = '';
-            cases.forEach(caseItem => {
-                const card = document.createElement('div');
-                card.className = 'case-card';
-                card.dataset.caseId = caseItem.id;
+        function getRandomItemByChance(items) {
+            const totalChance = items.reduce((sum, item) => sum + item.chance, 0);
+            let random = Math.random() * totalChance;
 
-                card.innerHTML = `
-            <div class="case-title">${caseItem.name}</div>
-            <img src="${caseItem.image}" alt="${caseItem.name}" class="case-image">
-            <div class="case-price">${caseItem.price} ⭐</div>
-        `;
-                card.addEventListener('click', () => showCaseDetails(caseItem.id));
-                caseGallery.appendChild(card);
-            });
+            for (let i = 0; i < items.length; i++) {
+                if (random < items[i].chance) {
+                    return items[i];
+                }
+                random -= items[i].chance;
+            }
+
+            return items[items.length - 1];
         }
 
         function populateRoulette(items) {
