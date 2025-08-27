@@ -312,7 +312,7 @@
         }
 
         .case-card img {
-            max-width: 100%;
+            max-width: 140%;
             height: auto;
             display: block;
             margin: 0 auto;
@@ -1539,8 +1539,8 @@
                 card.dataset.caseId = caseItem.id;
                 card.setAttribute('data-price', `${caseItem.price} ⭐`);
                 card.innerHTML = `
-            <img src="${caseItem.image}" alt="${caseItem.name}">
             <h3>${caseItem.name}</h3>
+            <img src="${caseItem.image}" alt="${caseItem.name}">
         `;
                 card.addEventListener('click', () => showCaseDetails(caseItem.id));
                 caseGallery.appendChild(card);
