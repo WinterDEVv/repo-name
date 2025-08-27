@@ -1435,7 +1435,6 @@
 
     function createItemElement(item) {
         const card = document.createElement('div');
-        card.classList.add('item-card', item.rarity_color);
         card.innerHTML = `
             <img src="${item.file}" alt="${item.name}" class="item-gif">
             <div class="item-name">${item.name}</div>
