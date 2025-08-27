@@ -268,11 +268,11 @@
             text-align: center;
             cursor: pointer;
             transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
-            width: 48%; /* два в ряд с небольшим зазором */
+            width: 100%; /* занимать всю ячейку сетки */
             box-shadow: 0 8px 25px var(--color-card-shadow);
             position: relative;
             overflow: hidden;
-            margin: 10px;
+            margin: 10px 0; /* вертикальные отступы для разделения */
         }
 
         .case-card::before {
@@ -780,14 +780,6 @@
 
             h2 {
                 font-size: 2em;
-            }
-
-            .case-gallery {
-                display: grid;
-                grid-template-columns: repeat(2, 1fr); /* 2 в ряд */
-                gap: 10px;
-                margin-top: 20px;
-                justify-items: start; /* выравнивание по левому краю */
             }
 
             .case-card {
