@@ -1106,7 +1106,6 @@
             align-items: center;
             gap: 5px;
             padding: 5px 10px;
-            background: rgba(0,0,0,0.4);
             border-radius: 8px;
             max-width: 100%;
             margin: 10px auto; /* по центру */
@@ -1115,7 +1114,6 @@
         }
 
         gift-feed h3 {
-            color: #fff;
             margin: 0;
             margin-right: 15px;
             font-size: 1.2em;
@@ -1126,13 +1124,29 @@
             height: 30px;
             overflow: hidden;
         }
+
+        .gif-wrapper {
+            background-color: #424242;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 4px; /* по желанию */
+        }
         
     </style>
 </head>
 <body>
-    <div id="gift-feed" style="margin-top: 10px; padding: 10px 20px; background: rgba(0,0,0,0.4); border-radius: 8px; display: flex; align-items: center; gap: 5px; overflow: hidden; max-width: 100%; margin-left: auto; margin-right: auto;">
-        <h3 style="margin: 0; font-size: 14px; color: #fff;">Life: </h3>
-        <div id="gif-container" style="display:flex; gap:5px; height:30px; overflow:hidden;"></div>
+    <div id="online-status" style="margin-top: 10px; padding: 8px 20px; background: rgba(0,0,0,0.4); border-radius: 8px; display: flex; align-items: center; gap: 10px; max-width: 100%; margin-left: auto; margin-right: auto;">
+        <!-- Обертка для текста и числа -->
+        <div style="display: flex; flex-direction: column; align-items: center;">
+            <span style="color: #0f0; font-weight: bold; font-size: 16px;">● LIVE</span>
+            <span id="online-count" style="color: #0f0; font-weight: bold; font-size: 14px;">724</span>
+        </div>
+        <div id="gift-feed" style="margin-top: 10px; padding: 10px 20px; border-radius: 8px; display: flex; align-items: center; gap: 5px; overflow: hidden; max-width: 100%; margin-left: auto; margin-right: auto;">
+        <div id="gif-container" style="display:flex; gap:5px; height:50px; overflow:hidden;"></div>
+        </div>
     </div>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <header class="main-header">
@@ -1434,27 +1448,49 @@
 
         // функция добавления случайного GIF
         function addRandomGif() {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'gif-wrapper';
+
             const gif = document.createElement('img');
             gif.src = giftGifs[Math.floor(Math.random() * giftGifs.length)];
             gif.className = 'gif-item';
+            gif.style.maxWidth = '100%'; // чтобы GIF не выходил за границы
 
-            // Добавляем в левую часть (в начало)
-            gifContainer.insertBefore(gif, gifContainer.firstChild);
+            // Вставляем GIF внутрь обертки
+            wrapper.appendChild(gif);
 
-            // Удаляем самый старый с конца, если элементов больше лимита
-            const maxGifs = 6; // или любой другой лимит
+            // Добавляем в начало контейнера
+            gifContainer.insertBefore(wrapper, gifContainer.firstChild);
+
+            // Удаляем самый старый, если элементов больше лимита
+            const maxGifs = 6;
             if (gifContainer.children.length > maxGifs) {
                 gifContainer.removeChild(gifContainer.lastChild);
             }
         }
 
-        // автоматическая смена каждые 10-30 секунд
-        setInterval(addRandomGif, Math.random() * 20000 + 10000);
-
-        // Первый запуск
+        // Изначально добавляем несколько GIF
         for (let i = 0; i < 5; i++) {
             addRandomGif();
         }
+
+        // Автоматическое добавление GIF каждые 10-30 секунд
+        setInterval(addRandomGif, Math.random() * 20000 + 10000);
+
+        const onlineCountSpan = document.getElementById('online-count');
+
+        function updateOnlineCount() {
+            const baseNumber = 724;
+            const variation = Math.floor(Math.random() * 121) - 60; // -60 до +60
+            const newCount = baseNumber + variation;
+            onlineCountSpan.textContent = newCount;
+        }
+
+        // Обновляем онлайн-число каждые 10-30 секунд
+        setInterval(updateOnlineCount, Math.random() * 20000 + 10000);
+
+        // Первое обновление
+        updateOnlineCount();
 
         let currentCase = null;
         let telegramUser = null;
@@ -1605,10 +1641,10 @@
         function createItemElement(item) {
             const card = document.createElement('div');
             card.innerHTML = `
-                        <img src="${item.file}" alt="${item.name}" class="item-gif">
-                        <div class="item-name">${item.name}</div>
-                        <div class="item-price">${typeof item.price === 'number' ? item.price : item.price} ⭐</div>
-                    `;
+                                <img src="${item.file}" alt="${item.name}" class="item-gif">
+                                <div class="item-name">${item.name}</div>
+                                <div class="item-price">${typeof item.price === 'number' ? item.price : item.price} ⭐</div>
+                            `;
             return card;
         }
 
@@ -1620,9 +1656,9 @@
                 card.dataset.caseId = caseItem.id;
                 card.setAttribute('data-price', `${caseItem.price} ⭐`);
                 card.innerHTML = `
-            <h3>${caseItem.name}</h3>
-            <img src="${caseItem.image}" alt="${caseItem.name}">
-        `;
+                    <h3>${caseItem.name}</h3>
+                    <img src="${caseItem.image}" alt="${caseItem.name}">
+                `;
                 card.addEventListener('click', () => showCaseDetails(caseItem.id));
                 caseGallery.appendChild(card);
             });
@@ -1681,11 +1717,11 @@
                 card.classList.add('item-list-card', item.rarity_color);
                 const actualChance = (item.chance / totalModifiedChance) * 100;
                 card.innerHTML = `
-                            <img src="${item.file}" alt="${item.name}" class="item-gif">
-                            <div class="item-name">${item.name}</div>
-                            <div class="item-price">${typeof item.price === 'number' ? item.price : item.price} ⭐</div>
-                            <div class="item-chance">${actualChance.toFixed(2)}%</div>
-                        `;
+                                    <img src="${item.file}" alt="${item.name}" class="item-gif">
+                                    <div class="item-name">${item.name}</div>
+                                    <div class="item-price">${typeof item.price === 'number' ? item.price : item.price} ⭐</div>
+                                    <div class="item-chance">${actualChance.toFixed(2)}%</div>
+                                `;
                 itemList.appendChild(card);
             });
         }
@@ -1771,9 +1807,9 @@
                     openBtn.disabled = false;
                     // Обновляем содержимое модалки только изображением
                     modalItemInfo.innerHTML = `
-                    <span class="modal-close" onclick="closeModal()">&times;</span>
-                    <img src="${winningItem.file}" alt="${winningItem.name}" class="item-gif">
-                `;
+                            <span class="modal-close" onclick="closeModal()">&times;</span>
+                            <img src="${winningItem.file}" alt="${winningItem.name}" class="item-gif">
+                        `;
                     // Убираем добавление текста с названием
                     // Можно оставить класс для стилизации, если нужно
                     modalItemInfo.className = `modal-content modal-${winningItem.rarity_color}`;
@@ -1832,10 +1868,10 @@
                     const card = document.createElement('div');
                     card.classList.add('item-list-card', item.rarity_color);
                     card.innerHTML = `
-                                <img src="${item.file}" alt="${item.name}" class="item-gif">
-                                <div class="item-name">${item.name}</div>
-                                <div class="item-price">${typeof item.price === 'number' ? item.price : item.price} ⭐</div>
-                            `;
+                                        <img src="${item.file}" alt="${item.name}" class="item-gif">
+                                        <div class="item-name">${item.name}</div>
+                                        <div class="item-price">${typeof item.price === 'number' ? item.price : item.price} ⭐</div>
+                                    `;
                     inventoryGrid.appendChild(card);
                 });
             }
