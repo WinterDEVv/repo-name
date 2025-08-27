@@ -848,13 +848,13 @@
             }
 
             .case-gallery {
-                display: grid;
-                grid-template-columns: repeat(2, 1fr); /* 2 в ряд */
-                gap: 10px;
+                display: flex;
+                grid-template-columns: repeat(2, 1fr);
+                flex-wrap: wrap;
+                gap: 5px;
                 margin-top: 20px;
                 justify-items: start; /* выравнивание по левому краю */
             }
-
 
             .roulette-container {
                 height: 150px;
