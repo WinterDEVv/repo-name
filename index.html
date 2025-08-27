@@ -275,20 +275,6 @@
             margin: 10px 0; /* вертикальные отступы для разделения */
         }
 
-        .case-title {
-            font-size: 14px;
-            font-weight: bold;
-            margin-bottom: 5px;
-            text-align: center;
-        }
-
-        /* Основное изображение */
-        .case-card img {
-            width: 100%;
-            display: block;
-            border-radius: 4px; /* по желанию */
-        }
-
         .case-card::after {
             content: "";
             position: absolute;
@@ -1544,11 +1530,11 @@
                 const card = document.createElement('div');
                 card.classList.add('case-card');
                 card.dataset.caseId = caseItem.id;
-                card.setAttribute('data-price', `${caseItem.price} ⭐`);
                 card.innerHTML = `
-        <img src="${caseItem.image}" alt="${caseItem.name}">
-        <div class="case-title">${caseItem.name}</div>
-    `;
+                            <img src="${caseItem.image}" alt="${caseItem.name}">
+                            <h3>${caseItem.name}</h3>
+                            <p>${caseItem.price} ⭐</p>
+                        `;
                 card.addEventListener('click', () => showCaseDetails(caseItem.id));
                 caseGallery.appendChild(card);
             });
