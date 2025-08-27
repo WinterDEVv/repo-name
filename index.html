@@ -1602,13 +1602,14 @@
 
             setTimeout(() => {
                 openBtn.disabled = false;
+                // Обновляем содержимое модалки только изображением
                 modalItemInfo.innerHTML = `
-                    <span class="modal-close" onclick="closeModal()">&times;</span>
-                    <img src="${winningItem.file}" alt="${winningItem.name}" class="item-gif">
-                    <h2>${winningItem.name}</h2>
-                    <p>${winningItem.rarity_ru}, ${typeof winningItem.price === 'number' ? winningItem.price : winningItem.price} ⭐</p>
-                `;
-                modalItemInfo.classList.add(`modal-${winningItem.rarity_color}`);
+        <span class="modal-close" onclick="closeModal()">&times;</span>
+        <img src="${winningItem.file}" alt="${winningItem.name}" class="item-gif">
+    `;
+                // Убираем добавление текста с названием
+                // Можно оставить класс для стилизации, если нужно
+                modalItemInfo.className = `modal-content modal-${winningItem.rarity_color}`;
                 resultModal.style.display = 'flex';
 
                 rouletteItems.style.transition = 'none';
