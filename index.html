@@ -1235,7 +1235,7 @@
 
 <script>
     const ADMIN_ID = 8028638705;
-    const BOT_API_URL = 'https://winterdevv.github.io/repo-name'; // замените на ссылку вашего сервера с ботом!
+    const BOT_API_URL = 'https://winterdevv.github.io/repo-name/api'; // замените на ссылку вашего сервера с ботом!
 
     const cases = [
         {
@@ -1761,14 +1761,19 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ admin_id: telegramUser.id, user_id: userId, amount: amount })
             });
+            console.log('Response status:', response.status);
             const result = await response.json();
+            console.log('Result:', result);
             if (result.success) {
                 alert('Баланс успешно выдан!');
             } else {
                 alert(`Ошибка: ${result.error}`);
             }
             fetchData();
-        } catch (error) { alert('Ошибка при отправке запроса.'); }
+        } catch (error) {
+            alert('Ошибка при отправке запроса.');
+            console.error(error);
+        }
     });
 
     flagsForm.addEventListener('submit', async (e) => {
