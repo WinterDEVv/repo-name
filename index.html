@@ -1112,6 +1112,10 @@
     </style>
 </head>
 <body>
+    <div id="gift-feed" style="margin-top: 10px; padding: 10px 20px; background: rgba(0,0,0,0.4); border-radius: 8px; display: flex; align-items: center; gap: 5px; overflow: hidden; max-width: 100%; margin-left: auto; margin-right: auto;">
+        <h3 style="margin: 0; font-size: 14px; color: #fff;">Life: </h3>
+        <div id="gif-container" style="display:flex; gap:5px; height:30px; overflow:hidden;"></div>
+    </div>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <header class="main-header">
         <div class="logo-section">
@@ -1145,13 +1149,6 @@
                 <p id="event-time"></p>
             </div>
         </div>
-
-        <div id="gift-feed" style="margin-top: 10px; padding: 10px 20px; background: rgba(0,0,0,0.4); border-radius: 8px; display: flex; align-items: center; gap: 5px; overflow: hidden; max-width: 100%; margin-left: auto; margin-right: auto;">
-            <h3 style="margin: 0; font-size: 14px; color: #fff;">Life: </h3>
-            <div id="gif-container" style="display:flex; gap:5px; height:30px; overflow:hidden;"></div>
-        </div>
-
-        <div style="height:20px;"></div>
 
         <div class="content-section" id="cases-section">
             <h1 id="cases-title">Выберите кейс</h1>
@@ -1510,10 +1507,10 @@
         function createItemElement(item) {
             const card = document.createElement('div');
             card.innerHTML = `
-                    <img src="${item.file}" alt="${item.name}" class="item-gif">
-                    <div class="item-name">${item.name}</div>
-                    <div class="item-price">${typeof item.price === 'number' ? item.price : item.price} ⭐</div>
-                `;
+                        <img src="${item.file}" alt="${item.name}" class="item-gif">
+                        <div class="item-name">${item.name}</div>
+                        <div class="item-price">${typeof item.price === 'number' ? item.price : item.price} ⭐</div>
+                    `;
             return card;
         }
 
@@ -1524,10 +1521,10 @@
                 card.classList.add('case-card');
                 card.dataset.caseId = caseItem.id;
                 card.innerHTML = `
-                        <img src="${caseItem.image}" alt="${caseItem.name}">
-                        <h3>${caseItem.name}</h3>
-                        <p>${caseItem.price} ⭐</p>
-                    `;
+                            <img src="${caseItem.image}" alt="${caseItem.name}">
+                            <h3>${caseItem.name}</h3>
+                            <p>${caseItem.price} ⭐</p>
+                        `;
                 card.addEventListener('click', () => showCaseDetails(caseItem.id));
                 caseGallery.appendChild(card);
             });
@@ -1586,11 +1583,11 @@
                 card.classList.add('item-list-card', item.rarity_color);
                 const actualChance = (item.chance / totalModifiedChance) * 100;
                 card.innerHTML = `
-                        <img src="${item.file}" alt="${item.name}" class="item-gif">
-                        <div class="item-name">${item.name}</div>
-                        <div class="item-price">${typeof item.price === 'number' ? item.price : item.price} ⭐</div>
-                        <div class="item-chance">${actualChance.toFixed(2)}%</div>
-                    `;
+                            <img src="${item.file}" alt="${item.name}" class="item-gif">
+                            <div class="item-name">${item.name}</div>
+                            <div class="item-price">${typeof item.price === 'number' ? item.price : item.price} ⭐</div>
+                            <div class="item-chance">${actualChance.toFixed(2)}%</div>
+                        `;
                 itemList.appendChild(card);
             });
         }
@@ -1676,9 +1673,9 @@
                     openBtn.disabled = false;
                     // Обновляем содержимое модалки только изображением
                     modalItemInfo.innerHTML = `
-                <span class="modal-close" onclick="closeModal()">&times;</span>
-                <img src="${winningItem.file}" alt="${winningItem.name}" class="item-gif">
-            `;
+                    <span class="modal-close" onclick="closeModal()">&times;</span>
+                    <img src="${winningItem.file}" alt="${winningItem.name}" class="item-gif">
+                `;
                     // Убираем добавление текста с названием
                     // Можно оставить класс для стилизации, если нужно
                     modalItemInfo.className = `modal-content modal-${winningItem.rarity_color}`;
@@ -1737,10 +1734,10 @@
                     const card = document.createElement('div');
                     card.classList.add('item-list-card', item.rarity_color);
                     card.innerHTML = `
-                            <img src="${item.file}" alt="${item.name}" class="item-gif">
-                            <div class="item-name">${item.name}</div>
-                            <div class="item-price">${typeof item.price === 'number' ? item.price : item.price} ⭐</div>
-                        `;
+                                <img src="${item.file}" alt="${item.name}" class="item-gif">
+                                <div class="item-name">${item.name}</div>
+                                <div class="item-price">${typeof item.price === 'number' ? item.price : item.price} ⭐</div>
+                            `;
                     inventoryGrid.appendChild(card);
                 });
             }
