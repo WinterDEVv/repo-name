@@ -54,7 +54,7 @@
             background: var(--color-nav-bg);
             backdrop-filter: blur(10px);
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-            padding: 5px 15px; /* уменьшили вертикальный паддинг с 15px до 8px */
+            padding: 5px 5px; /* уменьшили вертикальный паддинг с 15px до 8px */
             display: none;
             justify-content: space-between;
             align-items: center;
@@ -751,7 +751,7 @@
 
         @media (max-width: 768px) {
             .main-header {
-                padding: 10px 20px;
+                padding: 5px 20px;
                 flex-direction: column;
                 gap: 10px;
                 text-align: center;
@@ -1084,6 +1084,9 @@
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <header class="main-header">
     <div class="logo-section">
+        <a href="#" id="logo-link">
+            <img src="LogoPanel.png" alt="GiftRunner Logo">
+        </a>
         <h1 id="project-title">GiftRunner</h1>
     </div>
     <nav class="nav-menu">
