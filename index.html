@@ -783,7 +783,11 @@
             }
 
             .case-gallery {
-                gap: 5px;
+                display: grid;
+                grid-template-columns: repeat(2, 1fr); /* 2 в ряд */
+                gap: 10px;
+                margin-top: 20px;
+                justify-items: start; /* выравнивание по левому краю */
             }
 
             .case-card {
@@ -844,10 +848,11 @@
             }
 
             .case-gallery {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 5px; /* расстояние между кейсами */
-                justify-content: center;
+                display: grid;
+                grid-template-columns: repeat(2, 1fr); /* 2 в ряд */
+                gap: 10px;
+                margin-top: 20px;
+                justify-items: start; /* выравнивание по левому краю */
             }
 
 
