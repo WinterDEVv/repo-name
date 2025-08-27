@@ -1818,7 +1818,6 @@
             const initData = Telegram.WebApp.initDataUnsafe;
             if (initData.user) {
                 telegramUser = initData.user;
-                casesTitle.textContent = `Добро пожаловать, ${telegramUser.first_name || 'Пользователь'}!`;
                 
                 mainHeader.style.display = 'flex';
                 balanceInfo.style.display = 'flex';
